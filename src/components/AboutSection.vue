@@ -64,7 +64,7 @@ onMounted(() => {
              <!-- Placeholder for Profile Image -->
              <div class="text-center p-8">
                 <div class="w-32 h-32 mx-auto bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4 text-4xl">
-                  <img src="../assets/profile.jpg" alt="Profile Image">
+                  <img src="https://placehold.co/400" alt="Profile Image" class="w-full h-full object-cover">
                 </div>
                 <p class="text-sm text-gray-500">Profile Image Placeholder</p>
              </div>
