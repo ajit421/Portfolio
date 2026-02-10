@@ -3,6 +3,7 @@ import { ref, reactive } from 'vue'
 import { Mail, Phone, Github, Linkedin, Send, Copy, Check } from 'lucide-vue-next'
 import emailjs from '@emailjs/browser'
 
+// --- Form State ---
 const form = reactive({
   name: '',
   email: '',
@@ -22,6 +23,7 @@ const submitStatus = ref(null) // 'success' | 'error' | null
 const statusMessage = ref('')
 const emailCopied = ref(false)
 
+// --- Contact Details ---
 const contactInfo = [
   {
     icon: Mail,
@@ -50,6 +52,7 @@ const contactInfo = [
   }
 ]
 
+// --- Validation Logic ---
 const validateField = (field) => {
   switch (field) {
     case 'name':
@@ -90,6 +93,7 @@ const copyEmail = async () => {
   }
 }
 
+// --- MAIN SUBMIT FUNCTION ---
 const handleSubmit = async () => {
   if (!validateForm()) {
     return
@@ -99,17 +103,24 @@ const handleSubmit = async () => {
   submitStatus.value = null
 
   try {
-    // EmailJS configuration
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID'
-    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID'
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY'
+    // 1. Load credentials from .env
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 
-    // Check if EmailJS is configured
-    if (serviceId === 'YOUR_SERVICE_ID' || !serviceId) {
-      throw new Error('EmailJS not configured. Please add credentials to .env file.')
+    // 2. Debug Log (Check console if it fails)
+    console.log("Config loaded:", { 
+      serviceId, 
+      templateId, 
+      publicKey: publicKey ? 'Present' : 'Missing' 
+    })
+
+    if (!serviceId || !templateId || !publicKey) {
+      throw new Error('EmailJS credentials are missing in .env file')
     }
 
-    await emailjs.send(
+    // 3. Send Email
+    const response = await emailjs.send(
       serviceId,
       templateId,
       {
@@ -121,6 +132,8 @@ const handleSubmit = async () => {
       publicKey
     )
 
+    console.log('SUCCESS!', response.status, response.text)
+    
     submitStatus.value = 'success'
     statusMessage.value = 'Thank you! Your message has been sent successfully.'
     
@@ -129,15 +142,18 @@ const handleSubmit = async () => {
     form.email = ''
     form.subject = ''
     form.message = ''
+    
   } catch (error) {
     console.error('EmailJS error:', error)
     submitStatus.value = 'error'
-    statusMessage.value = error.message || 'Failed to send message. Please try again or contact directly via email.'
+    statusMessage.value = 'Failed to send message. Please try again.'
   } finally {
     isSubmitting.value = false
-    setTimeout(() => {
-      submitStatus.value = null
-    }, 5000)
+    if (submitStatus.value === 'success') {
+      setTimeout(() => {
+        submitStatus.value = null
+      }, 5000)
+    }
   }
 }
 </script>
@@ -154,12 +170,10 @@ const handleSubmit = async () => {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        <!-- Contact Form -->
         <div class="bg-white dark:bg-dark-surface p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
           <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Send a Message</h3>
           
           <form @submit.prevent="handleSubmit" class="space-y-6">
-            <!-- Name -->
             <div>
               <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Name <span class="text-red-500">*</span>
@@ -176,7 +190,6 @@ const handleSubmit = async () => {
               <p v-if="errors.name" class="mt-1 text-sm text-red-500">{{ errors.name }}</p>
             </div>
 
-            <!-- Email -->
             <div>
               <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Email <span class="text-red-500">*</span>
@@ -193,7 +206,6 @@ const handleSubmit = async () => {
               <p v-if="errors.email" class="mt-1 text-sm text-red-500">{{ errors.email }}</p>
             </div>
 
-            <!-- Subject -->
             <div>
               <label for="subject" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Subject <span class="text-red-500">*</span>
@@ -210,7 +222,6 @@ const handleSubmit = async () => {
               <p v-if="errors.subject" class="mt-1 text-sm text-red-500">{{ errors.subject }}</p>
             </div>
 
-            <!-- Message -->
             <div>
               <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Message <span class="text-red-500">*</span>
@@ -227,7 +238,6 @@ const handleSubmit = async () => {
               <p v-if="errors.message" class="mt-1 text-sm text-red-500">{{ errors.message }}</p>
             </div>
 
-            <!-- Submit Button -->
             <button
               type="submit"
               :disabled="isSubmitting"
@@ -237,10 +247,9 @@ const handleSubmit = async () => {
               {{ isSubmitting ? 'Sending...' : 'Send Message' }}
             </button>
 
-            <!-- Status Messages -->
             <Transition name="fade">
               <div v-if="submitStatus" :class="[
-                'p-4 rounded-lg',
+                'p-4 rounded-lg mt-4 text-center',
                 submitStatus === 'success' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
               ]">
                 {{ statusMessage }}
@@ -249,7 +258,6 @@ const handleSubmit = async () => {
           </form>
         </div>
 
-        <!-- Contact Information -->
         <div class="space-y-6">
           <div class="bg-white dark:bg-dark-surface p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Contact Information</h3>
@@ -287,7 +295,6 @@ const handleSubmit = async () => {
             </div>
           </div>
 
-          <!-- Additional Info -->
           <div class="bg-gradient-to-br from-primary/10 to-accent-success/10 p-8 rounded-xl border border-primary/20">
             <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Let's Build Something Amazing!</h3>
             <p class="text-gray-600 dark:text-gray-400">
