@@ -88,7 +88,7 @@ Follow these exact steps to enable your contact form.
    - Click "Save" button
    
 6. **Copy Template ID:**
-   - You'll see a **Template ID** at the top (looks like: `template_xyz789`)
+   - You'll see a **Template ID** at the top (looks like: `template_vd6a0ur`)
    - **COPY THIS** - you'll need it for .env file
    - Keep this tab open!
 
@@ -129,7 +129,7 @@ Now you have all three credentials! Let's add them to your `.env` file.
    # EmailJS Configuration (for Contact Form)
    # Sign up at https://www.emailjs.com/ to get your credentials
    VITE_EMAILJS_SERVICE_ID=service_abc123      # ← Paste Service ID here
-   VITE_EMAILJS_TEMPLATE_ID=template_xyz789    # ← Paste Template ID here
+   VITE_EMAILJS_TEMPLATE_ID=template_vd6a0ur    # ← Paste Template ID here
    VITE_EMAILJS_PUBLIC_KEY=AbCdEf123XyZ        # ← Paste Public Key here
    
    # Contact Form Configuration (IGNORE THESE - they're duplicates)

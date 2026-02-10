@@ -104,9 +104,9 @@ const handleSubmit = async () => {
 
   try {
     // 1. Load credentials from .env
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID
-    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID?.trim()
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID?.trim()
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY?.trim()
 
     // 2. Debug Log (Check console if it fails)
     console.log("Config loaded:", { 
@@ -117,6 +117,14 @@ const handleSubmit = async () => {
 
     if (!serviceId || !templateId || !publicKey) {
       throw new Error('EmailJS credentials are missing in .env file')
+    }
+
+    // CHECK FOR PLACEHOLDER VALUES
+    if (templateId === 'template_vd6a0ur' || serviceId === 'service_abc123' || publicKey === 'AbCdEf123XyZ') {
+      submitStatus.value = 'error'
+      statusMessage.value = 'Configuration Error: You are using the example credentials from the guide. Please update your .env file with your REAL EmailJS keys.'
+      isSubmitting.value = false
+      return
     }
 
     // 3. Send Email
@@ -153,6 +161,11 @@ const handleSubmit = async () => {
       setTimeout(() => {
         submitStatus.value = null
       }, 5000)
+    } else {
+      // Keep error messages visible longer (10s) so user can read them
+      setTimeout(() => {
+        submitStatus.value = null
+      }, 10000)
     }
   }
 }
