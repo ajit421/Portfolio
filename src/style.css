@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
+  /* Smooth transitions for theme changes */
+  :root {
+    transition-property: background-color, color, border-color;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+  }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      transition-duration: 0ms;
+    }
+
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    @apply antialiased;
+  }
+
+  /* Smooth transitions for all theme-aware elements */
+  * {
+    transition-property: background-color, color, border-color, box-shadow;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+  }
+
+  /* Skip transitions for transform and specific properties to avoid lag */
+  @media (prefers-reduced-motion: no-preference) {
+
+    [class*="transform"],
+    [class*="translate"],
+    [class*="scale"],
+    [class*="rotate"] {
+      transition-property: transform, background-color, color, border-color, box-shadow;
+    }
+  }
+}

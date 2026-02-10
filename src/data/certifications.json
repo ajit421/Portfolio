@@ -1,0 +1,43 @@
+{
+    "_comment": "HOW TO ADD NEW CERTIFICATIONS: Add a new object to the 'certifications' array following the template below. Fields: id (unique number), title, issuer, date, score (optional), certificateUrl, verifyUrl (optional), category (optional).",
+    "_achievementsComment": "HOW TO ADD NEW ACHIEVEMENTS: Add a new object to the 'achievements' array. Fields: id (unique number), title, organization, description, icon (trophy/medal/star/award).",
+    "certifications": [
+        {
+            "id": 1,
+            "title": "Introduction to Internet of Things",
+            "issuer": "NPTEL",
+            "date": "Jan - Apr 2025",
+            "score": "90/100",
+            "certificateUrl": "#",
+            "verifyUrl": "#",
+            "category": "IoT",
+            "description": "Comprehensive course covering IoT fundamentals, sensor integration, and cloud connectivity."
+        }
+    ],
+    "achievements": [
+        {
+            "id": 1,
+            "title": "Best Idea Challenge Winner",
+            "organization": "CDAC Bootcamp 2024",
+            "description": "Developed Hybrid Drone (UAV) using ENUM Technology",
+            "icon": "trophy",
+            "date": "2024"
+        },
+        {
+            "id": 2,
+            "title": "Team Leader - TechMITI'23",
+            "organization": "GEC Khagaria",
+            "description": "Led team of 22 students in technical event management",
+            "icon": "medal",
+            "date": "2023"
+        },
+        {
+            "id": 3,
+            "title": "Volunteer - Start-up Cell",
+            "organization": "GEC Khagaria",
+            "description": "Active technical mentor supporting student entrepreneurs",
+            "icon": "star",
+            "date": "2023 - Present"
+        }
+    ]
+}

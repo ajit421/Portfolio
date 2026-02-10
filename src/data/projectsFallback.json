@@ -1,0 +1,135 @@
+[
+    {
+        "id": "project-1",
+        "name": "PCB Motor Calculator & 3D Visualizer",
+        "description": "Flask-based web app for PCB motor parameter calculations with interactive 3D visualization using Three.js. Includes real-time torque, speed, and efficiency analysis.",
+        "category": "PCB",
+        "tech": [
+            "Python",
+            "Flask",
+            "Three.js",
+            "JavaScript"
+        ],
+        "html_url": "https://github.com/ajit421",
+        "homepage": null,
+        "stargazers_count": 12,
+        "featured": true,
+        "image": null
+    },
+    {
+        "id": "project-2",
+        "name": "SysControl - Remote Admin Bot",
+        "description": "Telegram bot for remote system administration. Control PC operations, monitor resources, execute commands, and manage files from anywhere securely.",
+        "category": "Automation",
+        "tech": [
+            "Python",
+            "Telegram API",
+            "System Programming"
+        ],
+        "html_url": "https://github.com/ajit421",
+        "homepage": null,
+        "stargazers_count": 8,
+        "featured": true,
+        "image": null
+    },
+    {
+        "id": "project-3",
+        "name": "Smart Calculator - AI Handwriting Recognition",
+        "description": "AI-powered calculator recognizing handwritten mathematical expressions. Uses CNN for digit recognition and expression parsing for computation.",
+        "category": "AI/ML",
+        "tech": [
+            "Python",
+            "TensorFlow",
+            "OpenCV",
+            "Streamlit"
+        ],
+        "html_url": "https://github.com/ajit421",
+        "homepage": null,
+        "stargazers_count": 15,
+        "featured": true,
+        "image": null
+    },
+    {
+        "id": "project-4",
+        "name": "Gmail-to-Telegram Notifier",
+        "description": "Multi-account Gmail monitoring system with instant Telegram notifications. Supports custom filters, attachment previews, and priority flagging.",
+        "category": "Automation",
+        "tech": [
+            "Python",
+            "Gmail API",
+            "Telegram Bot API"
+        ],
+        "html_url": "https://github.com/ajit421",
+        "homepage": null,
+        "stargazers_count": 6,
+        "featured": true,
+        "image": null
+    },
+    {
+        "id": "project-5",
+        "name": "PDF Eye-Saver & Background Changer",
+        "description": "Utility to convert bright PDF backgrounds to eye-friendly dark mode. Batch processing support with customizable color schemes.",
+        "category": "Automation",
+        "tech": [
+            "Python",
+            "PyPDF2",
+            "PIL"
+        ],
+        "html_url": "https://github.com/ajit421",
+        "homepage": null,
+        "stargazers_count": 4,
+        "featured": true,
+        "image": null
+    },
+    {
+        "id": "project-6",
+        "name": "Machine Learning Algorithm Suite",
+        "description": "Comprehensive collection of ML algorithms implemented from scratch including regression, classification, clustering, and neural networks with visualizations.",
+        "category": "AI/ML",
+        "tech": [
+            "Python",
+            "NumPy",
+            "Scikit-learn",
+            "Matplotlib"
+        ],
+        "html_url": "https://github.com/ajit421",
+        "homepage": null,
+        "stargazers_count": 20,
+        "featured": true,
+        "image": null
+    },
+    {
+        "id": "project-7",
+        "name": "Flask Multi-App Collection",
+        "description": "Portfolio of Flask web applications including authentication systems, REST APIs, real-time dashboards, and database-driven apps.",
+        "category": "Web",
+        "tech": [
+            "Python",
+            "Flask",
+            "SQLAlchemy",
+            "JavaScript"
+        ],
+        "html_url": "https://github.com/ajit421",
+        "homepage": null,
+        "stargazers_count": 10,
+        "featured": true,
+        "image": null
+    },
+    {
+        "id": "project-8",
+        "name": "Deep Learning MNIST Classifier",
+        "description": "CNN-based handwritten digit classifier achieving 99%+ accuracy on MNIST dataset. Includes model visualization and deployment ready API.",
+        "category": "AI/ML",
+        "tech": [
+            "Python",
+            "TensorFlow",
+            "Keras",
+            "FastAPI"
+        ],
+        "html_url": "https://github.com/ajit421",
+        "homepage": null,
+        "stargazers_count": 18,
+        "featured": true,
+        "image": null
+    }
+]
