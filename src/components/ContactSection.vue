@@ -1,7 +1,48 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, nextTick } from 'vue'
+import * as THREE from 'three'
 import { Mail, Phone, Github, Linkedin, Send, Copy, Check } from 'lucide-vue-next'
 import emailjs from '@emailjs/browser'
+import { useScrollAnimation } from '../composables/useScrollAnimation'
+import { useRipple } from '../composables/useRipple'
+import { useThreeScene, isMobile } from '../three/useThreeScene'
+
+const { slideInLeft, slideInRight } = useScrollAnimation()
+const { createRipple } = useRipple()
+
+// --- Three.js Torus Knot ---
+const torusContainer = ref(null)
+
+useThreeScene(torusContainer, {
+  cameraOptions: { fov: 50, position: [0, 0, 4] },
+
+  setup(scene) {
+    const geo = new THREE.TorusKnotGeometry(1, 0.35, 100, 16)
+    const mat = new THREE.MeshStandardMaterial({
+      color: 0x10B981,
+      roughness: 0.2,
+      metalness: 0.8,
+      emissive: 0x10B981,
+      emissiveIntensity: 0.2,
+      wireframe: false,
+    })
+    const knot = new THREE.Mesh(geo, mat)
+    scene.add(knot)
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5))
+    const dl = new THREE.DirectionalLight(0x14B8A6, 1)
+    dl.position.set(3, 5, 5)
+    scene.add(dl)
+
+    return { knot }
+  },
+
+  animate(delta, elapsed, data) {
+    if (!data?.knot) return
+    data.knot.rotation.x = elapsed * 0.3
+    data.knot.rotation.y = elapsed * 0.5
+  },
+})
 
 // --- Form State ---
 const form = reactive({
@@ -23,6 +64,18 @@ const submitStatus = ref(null) // 'success' | 'error' | null
 const statusMessage = ref('')
 const emailCopied = ref(false)
 
+// --- Toast notifications ---
+const toasts = ref([])
+let toastId = 0
+
+const addToast = (message, type = 'success') => {
+  const id = ++toastId
+  toasts.value.push({ id, message, type })
+  setTimeout(() => {
+    toasts.value = toasts.value.filter(t => t.id !== id)
+  }, 5000)
+}
+
 // --- Contact Details ---
 const contactInfo = [
   {
@@ -30,25 +83,29 @@ const contactInfo = [
     label: 'Email',
     value: 'ajit.info999@gmail.com',
     link: 'mailto:ajit.info999@gmail.com',
-    copyable: true
+    copyable: true,
+    socialClass: 'social-icon-mail'
   },
   {
     icon: Phone,
     label: 'Phone',
     value: '+91 6205607900',
-    link: 'tel:+916205607900'
+    link: 'tel:+916205607900',
+    socialClass: 'social-icon-phone'
   },
   {
     icon: Github,
     label: 'GitHub',
     value: 'github.com/ajit421',
-    link: 'https://github.com/ajit421'
+    link: 'https://github.com/ajit421',
+    socialClass: 'social-icon-github'
   },
   {
     icon: Linkedin,
     label: 'LinkedIn',
     value: 'linkedin.com/in/ajit7900',
-    link: 'https://linkedin.com/in/ajit7900'
+    link: 'https://linkedin.com/in/ajit7900',
+    socialClass: 'social-icon-linkedin'
   }
 ]
 
@@ -85,6 +142,7 @@ const copyEmail = async () => {
   try {
     await navigator.clipboard.writeText('ajit.info999@gmail.com')
     emailCopied.value = true
+    addToast('Email copied to clipboard!', 'success')
     setTimeout(() => {
       emailCopied.value = false
     }, 2000)
@@ -103,31 +161,20 @@ const handleSubmit = async () => {
   submitStatus.value = null
 
   try {
-    // 1. Load credentials from .env
     const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID?.trim()
     const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID?.trim()
     const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY?.trim()
-
-    // 2. Debug Log (Check console if it fails)
-    console.log("Config loaded:", { 
-      serviceId, 
-      templateId, 
-      publicKey: publicKey ? 'Present' : 'Missing' 
-    })
 
     if (!serviceId || !templateId || !publicKey) {
       throw new Error('EmailJS credentials are missing in .env file')
     }
 
-    // CHECK FOR PLACEHOLDER VALUES
     if (templateId === 'template_vd6a0ur' || serviceId === 'service_abc123' || publicKey === 'AbCdEf123XyZ') {
-      submitStatus.value = 'error'
-      statusMessage.value = 'Configuration Error: You are using the example credentials from the guide. Please update your .env file with your REAL EmailJS keys.'
+      addToast('Configuration Error: Please update your .env file with real EmailJS keys.', 'error')
       isSubmitting.value = false
       return
     }
 
-    // 3. Send Email
     const response = await emailjs.send(
       serviceId,
       templateId,
@@ -142,8 +189,7 @@ const handleSubmit = async () => {
 
     console.log('SUCCESS!', response.status, response.text)
     
-    submitStatus.value = 'success'
-    statusMessage.value = 'Thank you! Your message has been sent successfully.'
+    addToast('Thank you! Your message has been sent successfully.', 'success')
     
     // Reset form
     form.name = ''
@@ -153,28 +199,24 @@ const handleSubmit = async () => {
     
   } catch (error) {
     console.error('EmailJS error:', error)
-    submitStatus.value = 'error'
-    statusMessage.value = 'Failed to send message. Please try again.'
+    addToast('Failed to send message. Please try again.', 'error')
   } finally {
     isSubmitting.value = false
-    if (submitStatus.value === 'success') {
-      setTimeout(() => {
-        submitStatus.value = null
-      }, 5000)
-    } else {
-      // Keep error messages visible longer (10s) so user can read them
-      setTimeout(() => {
-        submitStatus.value = null
-      }, 10000)
-    }
   }
 }
+
+onMounted(async () => {
+  await nextTick()
+  slideInLeft('.contact-heading')
+  slideInLeft('.contact-form')
+  slideInRight('.contact-info')
+})
 </script>
 
 <template>
-  <section id="contact" class="py-20 bg-gray-50 dark:bg-dark-background/50 transition-colors duration-300">
+  <section id="contact" class="py-20 bg-gray-50 dark:bg-dark-background/50 section-bg-contact transition-colors duration-300">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
+      <div class="contact-heading text-center mb-16">
         <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Get In Touch</h2>
         <div class="w-16 h-1 bg-primary mx-auto rounded-full mb-4"></div>
         <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
@@ -183,7 +225,7 @@ const handleSubmit = async () => {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        <div class="bg-white dark:bg-dark-surface p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+        <div class="contact-form bg-white dark:bg-dark-surface p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
           <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Send a Message</h3>
           
           <form @submit.prevent="handleSubmit" class="space-y-6">
@@ -254,34 +296,32 @@ const handleSubmit = async () => {
             <button
               type="submit"
               :disabled="isSubmitting"
-              class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              :class="['btn btn-gradient-animated w-full', { 'btn-loading': isSubmitting }]"
+              @click="createRipple($event)"
             >
-              <Send class="w-5 h-5" :class="{ 'animate-pulse': isSubmitting }" />
-              {{ isSubmitting ? 'Sending...' : 'Send Message' }}
+              <template v-if="isSubmitting">
+                <div class="btn-spinner"></div>
+                <span>Sending...</span>
+              </template>
+              <template v-else>
+                <Send class="w-5 h-5" aria-hidden="true" />
+                <span>Send Message</span>
+              </template>
             </button>
-
-            <Transition name="fade">
-              <div v-if="submitStatus" :class="[
-                'p-4 rounded-lg mt-4 text-center',
-                submitStatus === 'success' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
-              ]">
-                {{ statusMessage }}
-              </div>
-            </Transition>
           </form>
         </div>
 
-        <div class="space-y-6">
+        <div class="contact-info space-y-6">
           <div class="bg-white dark:bg-dark-surface p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Contact Information</h3>
             <div class="space-y-4">
               <div
                 v-for="info in contactInfo"
                 :key="info.label"
-                class="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group"
+                class="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 group"
               >
-                <div class="p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
-                  <component :is="info.icon" class="w-6 h-6 text-primary" />
+                <div :class="['p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-200', info.socialClass]">
+                  <component :is="info.icon" class="w-6 h-6 text-primary" aria-hidden="true" />
                 </div>
                 <div class="flex-1">
                   <p class="text-sm text-gray-500 dark:text-gray-400">{{ info.label }}</p>
@@ -308,26 +348,60 @@ const handleSubmit = async () => {
             </div>
           </div>
 
-          <div class="bg-gradient-to-br from-primary/10 to-accent-success/10 p-8 rounded-xl border border-primary/20">
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Let's Build Something Amazing!</h3>
-            <p class="text-gray-600 dark:text-gray-400">
-              I'm always interested in hearing about new projects and opportunities. Whether you have a question or just want to say hi, feel free to reach out!
-            </p>
+          <div class="relative bg-gradient-to-br from-primary/10 to-accent-success/10 p-8 rounded-xl border border-primary/20 overflow-hidden">
+            <!-- 3D Torus Knot decoration -->
+            <div
+              ref="torusContainer"
+              class="absolute inset-0 opacity-20 pointer-events-none"
+              aria-hidden="true"
+            ></div>
+            <div class="relative z-10">
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Let's Build Something Amazing!</h3>
+              <p class="text-gray-600 dark:text-gray-400">
+                I'm always interested in hearing about new projects and opportunities. Whether you have a question or just want to say hi, feel free to reach out!
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Toast Notifications (top-right) -->
+    <Teleport to="body">
+      <div class="fixed top-20 right-4 z-[60] space-y-3" style="pointer-events: none;">
+        <TransitionGroup name="toast">
+          <div
+            v-for="toast in toasts"
+            :key="toast.id"
+            :class="[
+              'px-5 py-3 rounded-lg shadow-xl backdrop-blur-md text-sm font-medium max-w-sm',
+              toast.type === 'success'
+                ? 'bg-green-500/90 text-white'
+                : 'bg-red-500/90 text-white'
+            ]"
+            style="pointer-events: auto;"
+          >
+            {{ toast.message }}
+          </div>
+        </TransitionGroup>
+      </div>
+    </Teleport>
   </section>
 </template>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+.toast-enter-active {
+  animation: toast-slide-in 0.4s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
 }
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+.toast-leave-active {
+  animation: toast-slide-out 0.3s ease-in forwards;
+}
+@keyframes toast-slide-in {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes toast-slide-out {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(120%); opacity: 0; }
 }
 </style>

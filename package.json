@@ -10,10 +10,9 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
-    "@tsparticles/vue3": "^3.0.1",
+    "gsap": "^3.14.2",
     "lucide-vue-next": "^0.563.0",
-    "tsparticles-engine": "^2.12.0",
-    "tsparticles-slim": "^2.12.0",
+    "three": "^0.182.0",
     "vue": "^3.4.0"
   },
   "devDependencies": {

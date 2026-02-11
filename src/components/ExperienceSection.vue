@@ -1,6 +1,9 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { Briefcase, ChevronDown, ChevronUp } from 'lucide-vue-next'
+import { useScrollAnimation } from '../composables/useScrollAnimation'
+
+const { slideInLeft, staggerCards } = useScrollAnimation()
 
 const experiences = [
   {
@@ -19,6 +22,20 @@ const experiences = [
   },
   {
     id: 2,
+    company: 'Smart India Hackathon',
+    role: 'Team Lead',
+    duration: '2024',
+    period: 'Project Phase',
+    responsibilities: [
+      'Led team in developing AI-based solution',
+      'Architected full-stack application',
+      'Managed project timeline and deliverables'
+    ],
+    tech: ['React', 'Node.js', 'AI/ML'],
+    expanded: false
+  },
+  {
+    id: 3,
     company: 'DeepValley EMA',
     role: 'IoT Software Developer Intern',
     duration: 'Jun 2024 - Aug 2024',
@@ -32,7 +49,7 @@ const experiences = [
     expanded: false
   },
   {
-    id: 3,
+    id: 4,
     company: 'NIELIT, Patna',
     role: 'Industrial Training - IoT',
     duration: 'Dec 2024',
@@ -48,156 +65,89 @@ const experiences = [
 ]
 
 const items = ref(experiences)
-const isVisible = ref(false)
 const sectionRef = ref(null)
 
 const toggleExpand = (index) => {
   items.value[index].expanded = !items.value[index].expanded
 }
 
-onMounted(() => {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        isVisible.value = true
-        observer.disconnect()
-      }
-    })
-  }, { threshold: 0.1 })
-  
-  if (sectionRef.value) {
-    observer.observe(sectionRef.value)
-  }
+onMounted(async () => {
+  await nextTick()
+  slideInLeft('.experience-heading')
+
+  // Wait a tick then set up alternating slide-in for timeline cards
+  setTimeout(() => {
+    alternatingSlideIn('.experience-timeline', '.experience-card', { distance: 80, duration: 0.8 })
+  }, 100)
 })
 </script>
 
 <template>
   <section id="experience" ref="sectionRef" class="py-20 bg-gray-50 dark:bg-dark-background/50 transition-colors duration-300">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
+      <div class="experience-heading text-center mb-16">
         <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Work Experience</h2>
         <div class="w-16 h-1 bg-primary mx-auto rounded-full"></div>
       </div>
 
-      <div class="relative">
-        <!-- Timeline Line -->
-        <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-300 dark:bg-gray-700 transform -translate-x-1/2 hidden md:block"></div>
+      <div class="experience-timeline relative max-w-4xl mx-auto">
+        <!-- Timeline Line (Background) -->
+        <div class="absolute left-[19px] top-4 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-800 hidden"></div>
 
-        <!-- Timeline Items -->
-        <div class="space-y-12">
+        <div class="space-y-8">
           <div 
             v-for="(item, index) in items" 
             :key="item.id"
-            :class="[
-              'relative transition-all duration-700',
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            ]"
-            :style="{ transitionDelay: `${index * 200}ms` }"
+            class="experience-card-timeline group"
           >
-            <!-- Desktop Layout (Alternating) -->
-            <div class="hidden md:grid md:grid-cols-2 gap-8">
-              <!-- Left Side (Odd) -->
-              <div :class="index % 2 === 0 ? 'text-right' : 'order-2'">
-                <div 
-                  v-if="index % 2 === 0"
-                  class="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow cursor-pointer"
-                  @click="toggleExpand(index)"
-                >
-                  <div class="flex items-start justify-between mb-4">
-                    <div class="flex-1">
-                      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-1">{{ item.role }}</h3>
-                      <p class="text-primary font-semibold mb-2">{{ item.company }}</p>
-                      <p class="text-sm text-gray-500">{{ item.duration }} • {{ item.period }}</p>
-                    </div>
-                    <component :is="item.expanded ? ChevronUp : ChevronDown" class="w-5 h-5 text-gray-400 ml-4" />
-                  </div>
-
-                  <Transition name="expand">
-                    <div v-if="item.expanded" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <ul class="space-y-2 text-left text-gray-600 dark:text-gray-400 text-sm mb-4">
-                        <li v-for="resp in item.responsibilities" :key="resp" class="flex items-start">
-                          <span class="text-primary mr-2">•</span>
-                          <span>{{ resp }}</span>
-                        </li>
-                      </ul>
-                      <div class="flex flex-wrap gap-2 justify-start">
-                        <span v-for="tech in item.tech" :key="tech" class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
-                          {{ tech }}
-                        </span>
-                      </div>
-                    </div>
-                  </Transition>
-                </div>
-              </div>
-
-              <!-- Right Side (Even) -->
-              <div :class="index % 2 === 1 ? '' : 'order-1'">
-                <div 
-                  v-if="index % 2 === 1"
-                  class="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow cursor-pointer"
-                  @click="toggleExpand(index)"
-                >
-                  <div class="flex items-start justify-between mb-4">
-                    <div class="flex-1">
-                      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-1">{{ item.role }}</h3>
-                      <p class="text-primary font-semibold mb-2">{{ item.company }}</p>
-                      <p class="text-sm text-gray-500">{{ item.duration }} • {{ item.period }}</p>
-                    </div>
-                    <component :is="item.expanded ? ChevronUp : ChevronDown" class="w-5 h-5 text-gray-400 ml-4" />
-                  </div>
-
-                  <Transition name="expand">
-                    <div v-if="item.expanded" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <ul class="space-y-2 text-gray-600 dark:text-gray-400 text-sm mb-4">
-                        <li v-for="resp in item.responsibilities" :key="resp" class="flex items-start">
-                          <span class="text-primary mr-2">•</span>
-                          <span>{{ resp }}</span>
-                        </li>
-                      </ul>
-                      <div class="flex flex-wrap gap-2">
-                        <span v-for="tech in item.tech" :key="tech" class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
-                          {{ tech }}
-                        </span>
-                      </div>
-                    </div>
-                  </Transition>
-                </div>
-              </div>
+            <!-- Timeline Marker -->
+            <div class="timeline-marker">
+              <div class="marker-dot group-hover:scale-125 transition-transform duration-300"></div>
+              <div v-if="index !== items.length - 1" class="marker-line"></div>
             </div>
 
-            <!-- Timeline Dot -->
-            <div class="absolute left-1/2 top-8 w-4 h-4 bg-primary rounded-full transform -translate-x-1/2 border-4 border-white dark:border-dark-background hidden md:block z-10"></div>
-
-            <!-- Mobile Layout (Stacked) -->
-            <div class="md:hidden">
-              <div 
-                class="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow cursor-pointer"
-                @click="toggleExpand(index)"
-              >
-                <div class="flex items-start justify-between mb-4">
-                  <div class="flex-1">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-1">{{ item.role }}</h3>
-                    <p class="text-primary font-semibold mb-2">{{ item.company }}</p>
-                    <p class="text-sm text-gray-500">{{ item.duration }} • {{ item.period }}</p>
+            <!-- Card Content -->
+            <div 
+              class="card-content-timeline cursor-pointer"
+              @click="toggleExpand(index)"
+            >
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                <div class="flex items-center gap-4">
+                  <!-- Company Logo Placeholder (Initials) -->
+                  <div class="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xl font-bold text-primary shrink-0">
+                    {{ item.company.charAt(0) }}
                   </div>
-                  <component :is="item.expanded ? ChevronUp : ChevronDown" class="w-5 h-5 text-gray-400 ml-4" />
+                  <div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ item.role }}</h3>
+                    <p class="text-primary font-medium">{{ item.company }}</p>
+                  </div>
                 </div>
+                <div class="text-right">
+                  <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap">{{ item.duration }}</p>
+                  <p class="text-xs text-gray-500">{{ item.period }}</p>
+                </div>
+              </div>
 
-                <Transition name="expand">
-                  <div v-if="item.expanded" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <ul class="space-y-2 text-gray-600 dark:text-gray-400 text-sm mb-4">
-                      <li v-for="resp in item.responsibilities" :key="resp" class="flex items-start">
-                        <span class="text-primary mr-2">•</span>
-                        <span>{{ resp }}</span>
-                      </li>
-                    </ul>
-                    <div class="flex flex-wrap gap-2">
-                      <span v-for="tech in item.tech" :key="tech" class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
-                        {{ tech }}
-                      </span>
-                    </div>
-                  </div>
-                </Transition>
+              <div class="pl-16">
+                 <ul class="achievements space-y-2 text-gray-600 dark:text-gray-400 text-sm mb-4">
+                    <li v-for="resp in item.responsibilities.slice(0, 2)" :key="resp">
+                      {{ resp }}
+                    </li>
+                    <li v-if="item.responsibilities.length > 2 && !item.expanded" class="text-xs text-gray-400 italic">
+                      + {{ item.responsibilities.length - 2 }} more...
+                    </li>
+                     <template v-if="item.expanded">
+                        <li v-for="resp in item.responsibilities.slice(2)" :key="resp">
+                          {{ resp }}
+                        </li>
+                     </template>
+                 </ul>
+
+                 <div class="flex flex-wrap gap-2">
+                    <span v-for="tech in item.tech" :key="tech" class="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded text-xs font-medium">
+                      {{ tech }}
+                    </span>
+                 </div>
               </div>
             </div>
           </div>

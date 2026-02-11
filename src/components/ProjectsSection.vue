@@ -1,10 +1,13 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { Search } from 'lucide-vue-next'
 import { fetchGitHubRepos } from '../services/githubService'
 import fallbackProjects from '../data/projectsFallback.json'
 import ProjectCard from './ProjectCard.vue'
 import ProjectModal from './ProjectModal.vue'
+import { useScrollAnimation } from '../composables/useScrollAnimation'
+
+const { slideInLeft, staggerCards } = useScrollAnimation()
 
 const categories = ['All', 'IoT', 'AI/ML', 'Web', 'PCB', 'Automation']
 const activeCategory = ref('All')
@@ -17,19 +20,13 @@ const selectedProject = ref(null)
 const isModalOpen = ref(false)
 
 const mergeProjects = (githubRepos, fallback) => {
-  // Create a map of fallback projects by name for easy lookup
   const fallbackMap = new Map(fallback.map(p => [p.name.toLowerCase(), p]))
-  
   const merged = []
-  
-  // Add all fallback projects first (they're featured)
   merged.push(...fallback)
   
-  // Add GitHub repos that aren't in fallback
   githubRepos.forEach(repo => {
     const repoNameLower = repo.name.toLowerCase()
     if (!fallbackMap.has(repoNameLower)) {
-      // Try to categorize based on topics/language
       let category = 'Web'
       if (repo.topics.includes('iot') || repo.topics.includes('hardware')) category = 'IoT'
       else if (repo.topics.includes('ml') || repo.topics.includes('ai')) category = 'AI/ML'
@@ -63,18 +60,19 @@ const loadProjects = async () => {
     projects.value = fallbackProjects
   } finally {
     isLoading.value = false
+    // Animate cards after loading completes
+    await nextTick()
+    staggerCards('.projects-grid', '.project-card-wrapper', { y: 80, stagger: 0.1 })
   }
 }
 
 const filteredProjects = computed(() => {
   let filtered = projects.value
   
-  // Filter by category
   if (activeCategory.value !== 'All') {
     filtered = filtered.filter(p => p.category === activeCategory.value)
   }
   
-  // Filter by search
   if (searchQuery.value.trim()) {
     const query = searchQuery.value.toLowerCase()
     filtered = filtered.filter(p => 
@@ -108,7 +106,9 @@ const closeModal = () => {
   selectedProject.value = null
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await nextTick()
+  slideInLeft('.projects-heading')
   loadProjects()
 })
 </script>
@@ -116,7 +116,7 @@ onMounted(() => {
 <template>
   <section id="projects" class="py-20 bg-white dark:bg-dark-surface transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
+      <div class="projects-heading text-center mb-16">
         <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Featured Projects</h2>
         <div class="w-16 h-1 bg-primary mx-auto rounded-full mb-8"></div>
         
@@ -151,10 +151,20 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- Loading State -->
-      <div v-if="isLoading" class="text-center py-12">
-        <div class="inline-block w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-        <p class="mt-4 text-gray-600 dark:text-gray-400">Loading projects...</p>
+      <!-- Loading State — Skeleton Shimmer Cards -->
+      <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div v-for="n in 6" :key="n" class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+          <div class="skeleton h-48 w-full"></div>
+          <div class="p-6 space-y-3">
+            <div class="skeleton h-6 w-3/4"></div>
+            <div class="skeleton h-4 w-full"></div>
+            <div class="skeleton h-4 w-2/3"></div>
+            <div class="flex gap-2 mt-4">
+              <div class="skeleton h-6 w-16 rounded-full"></div>
+              <div class="skeleton h-6 w-16 rounded-full"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Error Message -->
@@ -164,13 +174,17 @@ onMounted(() => {
       </div>
 
       <!-- Projects Grid -->
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <ProjectCard 
+      <div v-else class="projects-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div 
           v-for="project in displayedProjects" 
           :key="project.id"
-          :project="project"
-          @open-modal="openModal"
-        />
+          class="project-card-wrapper"
+        >
+          <ProjectCard 
+            :project="project"
+            @open-modal="openModal"
+          />
+        </div>
       </div>
 
       <!-- No Results -->
@@ -182,7 +196,7 @@ onMounted(() => {
       <div v-if="hasMore" class="text-center mt-12">
         <button 
           @click="loadMore"
-          class="px-8 py-3 bg-primary text-white rounded-full hover:bg-blue-700 transition-colors font-medium shadow-lg"
+          class="btn btn-neon btn-pill btn-lg"
         >
           Load More Projects
         </button>

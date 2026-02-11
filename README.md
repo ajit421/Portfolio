@@ -14,6 +14,9 @@ Modern, responsive portfolio website showcasing expertise in **IoT**, **AI/ML**,
 ## ✨ Features
 
 - 🎨 **Dark/Light Mode** - Smooth theme transitions with OS preference detection
+- 🎨 **Premium UI** - Glassmorphism, Neumorphism, and specialized card designs
+- 🧊 **3D Visuals** - Interactive 3D elements using Three.js (Hero, Skills, Contact)
+- 🎭 **Advanced Animations** - GSAP-powered scroll reveals and timeline effects
 - 📱 **Fully Responsive** - Mobile-first design, works on all devices
 - 🚀 **GitHub Integration** - Auto-fetches latest repositories via API
 - 📧 **Contact Form** - EmailJS integration with real-time validation
@@ -30,6 +33,8 @@ Modern, responsive portfolio website showcasing expertise in **IoT**, **AI/ML**,
 - [Vue 3](https://vuejs.org/) - Progressive JavaScript framework (Composition API)
 - [Vite](https://vitejs.dev/) - Next-generation build tool
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [Three.js](https://threejs.org/) - 3D Graphics
+- [GSAP](https://greensock.com/gsap/) - Advanced Animations
 
 **Integrations:**
 - [EmailJS](https://www.emailjs.com/) - Contact form backend
@@ -321,5 +326,6 @@ Private Repository. © 2026 Ajit Kumar. All rights reserved.
 ---
 
 **Built with ❤️ using Vue 3, Vite, and Tailwind CSS**
-#   P o r t f o l i o  
+#   P o r t f o l i o 
+ 
  

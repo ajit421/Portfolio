@@ -1,7 +1,13 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { Github, Linkedin, Mail, ChevronDown } from 'lucide-vue-next'
+import { ref, onMounted, nextTick } from 'vue'
+import * as THREE from 'three'
+import { Github, Linkedin, Mail, ChevronDown, ArrowRight, DownloadCloud, CheckCircle, Sparkles, MapPin } from 'lucide-vue-next'
+import { useThreeScene, isMobile } from '../three/useThreeScene'
+import { useRipple } from '../composables/useRipple'
 
+const { createRipple } = useRipple()
+
+// --- Typing Effect ---
 const roles = ["IoT Developer", "AI/ML Engineer", "Full-Stack Developer", "PCB Designer"]
 const currentRole = ref('')
 const roleIndex = ref(0)
@@ -10,7 +16,6 @@ const isDeleting = ref(false)
 
 const typeEffect = () => {
   const current = roles[roleIndex.value]
-  
   if (isDeleting.value) {
     currentRole.value = current.substring(0, charIndex.value - 1)
     charIndex.value--
@@ -18,149 +23,261 @@ const typeEffect = () => {
     currentRole.value = current.substring(0, charIndex.value + 1)
     charIndex.value++
   }
-
   if (!isDeleting.value && charIndex.value === current.length) {
     isDeleting.value = true
-    setTimeout(typeEffect, 2000) // Pause at end
+    setTimeout(typeEffect, 2000)
   } else if (isDeleting.value && charIndex.value === 0) {
     isDeleting.value = false
     roleIndex.value = (roleIndex.value + 1) % roles.length
-    setTimeout(typeEffect, 500) // Pause before typing next
+    setTimeout(typeEffect, 500)
   } else {
     setTimeout(typeEffect, isDeleting.value ? 50 : 100)
   }
 }
 
-onMounted(() => {
-  setTimeout(typeEffect, 1000)
+// --- Three.js Hero Scene ---
+const threeContainer = ref(null)
+const mouseX = ref(0)
+const mouseY = ref(0)
+
+const { webglSupported } = useThreeScene(threeContainer, {
+  cameraOptions: { fov: 60, position: [0, 0, 6] },
+
+  setup(scene, camera, renderer) {
+    const mobile = isMobile()
+
+    // --- Wireframe Icosahedron (outer) ---
+    const icoGeo = new THREE.IcosahedronGeometry(2.2, 1)
+    const icoMat = new THREE.MeshStandardMaterial({
+      color: 0x3B82F6,
+      wireframe: true,
+      emissive: 0x3B82F6,
+      emissiveIntensity: 0.3,
+      transparent: true,
+      opacity: 0.55,
+    })
+    const ico = new THREE.Mesh(icoGeo, icoMat)
+    scene.add(ico)
+
+    // --- Inner icosahedron (smaller, different rotation) ---
+    const innerGeo = new THREE.IcosahedronGeometry(1.2, 0)
+    const innerMat = new THREE.MeshStandardMaterial({
+      color: 0x8B5CF6,
+      wireframe: true,
+      emissive: 0x8B5CF6,
+      emissiveIntensity: 0.4,
+      transparent: true,
+      opacity: 0.35,
+    })
+    const innerIco = new THREE.Mesh(innerGeo, innerMat)
+    scene.add(innerIco)
+
+    // --- Orbiting Particles ---
+    const particleCount = mobile ? 800 : 3000
+    const positions = new Float32Array(particleCount * 3)
+    const colors = new Float32Array(particleCount * 3)
+
+    const palette = [
+      new THREE.Color(0x3B82F6),
+      new THREE.Color(0x8B5CF6),
+      new THREE.Color(0xEC4899),
+    ]
+
+    for (let i = 0; i < particleCount; i++) {
+      const radius = 2.5 + Math.random() * 4
+      const theta = Math.random() * Math.PI * 2
+      const phi = Math.acos(2 * Math.random() - 1)
+      positions[i * 3]     = radius * Math.sin(phi) * Math.cos(theta)
+      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta)
+      positions[i * 3 + 2] = radius * Math.cos(phi)
+
+      const c = palette[Math.floor(Math.random() * 3)]
+      colors[i * 3]     = c.r
+      colors[i * 3 + 1] = c.g
+      colors[i * 3 + 2] = c.b
+    }
+
+    const particlesGeo = new THREE.BufferGeometry()
+    particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+    particlesGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3))
+
+    const particlesMat = new THREE.PointsMaterial({
+      size: mobile ? 0.035 : 0.025,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.7,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      sizeAttenuation: true,
+    })
+    const particles = new THREE.Points(particlesGeo, particlesMat)
+    scene.add(particles)
+
+    // --- Lights ---
+    scene.add(new THREE.AmbientLight(0xffffff, 0.4))
+    const pl1 = new THREE.PointLight(0x3B82F6, 2, 20)
+    pl1.position.set(5, 5, 5)
+    const pl2 = new THREE.PointLight(0x8B5CF6, 1.5, 20)
+    pl2.position.set(-5, -3, 3)
+    scene.add(pl1, pl2)
+
+    // --- Mouse parallax listener ---
+    const onMouseMove = (e) => {
+      mouseX.value = (e.clientX / window.innerWidth - 0.5) * 2
+      mouseY.value = (e.clientY / window.innerHeight - 0.5) * 2
+    }
+    window.addEventListener('mousemove', onMouseMove)
+
+    return {
+      ico,
+      innerIco,
+      particles,
+      camera,
+      cleanup: () => {
+        window.removeEventListener('mousemove', onMouseMove)
+      },
+    }
+  },
+
+  animate(delta, elapsed, data) {
+    if (!data?.ico) return
+
+    const { ico, innerIco, particles, camera } = data
+
+    // Rotate icosahedrons
+    ico.rotation.x = elapsed * 0.15
+    ico.rotation.y = elapsed * 0.2
+    innerIco.rotation.x = -elapsed * 0.25
+    innerIco.rotation.z = elapsed * 0.18
+
+    // Breathe scale
+    const breathe = 1 + Math.sin(elapsed * 0.8) * 0.04
+    ico.scale.setScalar(breathe)
+    innerIco.scale.setScalar(1 + Math.sin(elapsed * 1.2) * 0.06)
+
+    // Particle drift
+    particles.rotation.y = elapsed * 0.05
+    particles.rotation.x = elapsed * 0.02
+
+    // Mouse parallax on camera
+    const targetX = mouseX.value * 0.5
+    const targetY = mouseY.value * -0.3
+    camera.position.x += (targetX - camera.position.x) * 0.02
+    camera.position.y += (targetY - camera.position.y) * 0.02
+    camera.lookAt(0, 0, 0)
+  },
 })
 
-// Particle Options
-const particlesOptions = {
-  background: {
-    color: {
-      value: "transparent",
-    },
-  },
-  fpsLimit: 120,
-  interactivity: {
-    events: {
-      onClick: {
-        enable: true,
-        mode: "push",
-      },
-      onHover: {
-        enable: true,
-        mode: "repulse",
-      },
-      resize: true,
-    },
-    modes: {
-      bubble: {
-        distance: 400,
-        duration: 2,
-        opacity: 0.8,
-        size: 40,
-      },
-      push: {
-        quantity: 4,
-      },
-      repulse: {
-        distance: 200,
-        duration: 0.4,
-      },
-    },
-  },
-  particles: {
-    color: {
-      value: "#3B82F6", 
-    },
-    links: {
-      color: "#3B82F6",
-      distance: 150,
-      enable: true,
-      opacity: 0.5,
-      width: 1,
-    },
-    move: {
-      direction: "none",
-      enable: true,
-      outMode: "bounce",
-      random: false,
-      speed: 1,
-      straight: false,
-    },
-    number: {
-      density: {
-        enable: true,
-        area: 800,
-      },
-      value: 80,
-    },
-    opacity: {
-      value: 0.5,
-    },
-    shape: {
-      type: "circle",
-    },
-    size: {
-      random: true,
-      value: 5,
-    },
-  },
-  detectRetina: true,
-}
+onMounted(async () => {
+  setTimeout(typeEffect, 1000)
+  await nextTick()
+
+  // Staggered entrance animation
+  const items = document.querySelectorAll('.hero-animate-item')
+  if (items.length) {
+    const gsap = (await import('gsap')).default
+    gsap.from(items, {
+      y: 40,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: 'power3.out',
+      delay: 0.3,
+    })
+  }
+})
 </script>
 
 <template>
-  <section class="relative h-screen flex items-center justify-center overflow-hidden">
-    <!-- Particles Background -->
-    <vue-particles
-      id="tsparticles"
+  <section class="relative h-screen flex items-center justify-center overflow-hidden section-bg-hero">
+    <!-- Three.js 3D Background -->
+    <div
+      ref="threeContainer"
       class="absolute inset-0 -z-10"
-      :options="particlesOptions"
-    />
+      aria-hidden="true"
+    ></div>
+
+    <!-- CSS Fallback if no WebGL -->
+    <div
+      v-if="!webglSupported"
+      class="absolute inset-0 -z-10 bg-gradient-to-br from-blue-900/20 via-purple-900/10 to-transparent"
+      aria-hidden="true"
+    ></div>
 
     <!-- Content -->
     <div class="text-center z-10 px-4">
-      <h2 class="text-lg md:text-xl text-primary font-bold mb-2 animate-fade-in-up">
+      <!-- Status Badges -->
+      <div class="hero-animate-item flex flex-wrap justify-center gap-3 mb-6">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 status-glow">
+          <CheckCircle class="w-3.5 h-3.5" aria-hidden="true" />
+          Available for Work
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400">
+          <Sparkles class="w-3.5 h-3.5 icon-float" aria-hidden="true" />
+          Currently Learning System Design
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
+          <MapPin class="w-3.5 h-3.5" aria-hidden="true" />
+          Bihar, India
+        </span>
+      </div>
+
+      <h2 class="hero-animate-item text-lg md:text-xl text-primary font-bold mb-2">
         Hello, I'm
       </h2>
-      <h1 class="text-5xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 animate-fade-in">
+      <h1 class="hero-animate-item text-5xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300">
         Ajit Kumar
       </h1>
       
-      <div class="h-10 md:h-12 mb-6">
+      <div class="hero-animate-item h-10 md:h-12 mb-6">
         <span class="text-2xl md:text-4xl font-mono text-gray-700 dark:text-gray-300">
           {{ currentRole }}<span class="animate-pulse">|</span>
         </span>
       </div>
 
-      <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8 text-lg">
+      <p class="hero-animate-item text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8 text-lg">
         Daily learner. Practical explorer. Technology builder.
       </p>
 
-      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-        <a href="#projects" class="px-8 py-3 bg-primary text-white rounded-full hover:bg-blue-700 transition-colors font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-          View Projects
+      <div class="hero-animate-item flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+        <a 
+          href="#projects" 
+          class="btn btn-primary btn-pill btn-icon-animated group"
+          @click="createRipple($event)"
+          aria-label="View my projects"
+        >
+          <span class="btn-text">View Projects</span>
+          <ArrowRight class="btn-icon-el w-4 h-4" aria-hidden="true" />
         </a>
-        <a href="/resume.pdf" class="px-8 py-3 border-2 border-gray-300 dark:border-gray-700 rounded-full hover:border-primary dark:hover:border-primary hover:text-primary dark:hover:text-primary transition-all font-medium">
-          Download Resume
+        <a 
+          href="/resume.pdf" 
+          class="btn btn-download btn-pill btn-icon-animated download-arrow-trigger group"
+          @click="createRipple($event)"
+          aria-label="Download my resume"
+        >
+          <DownloadCloud class="w-4 h-4 download-arrow" aria-hidden="true" />
+          <span class="btn-text">Download Resume</span>
         </a>
-        <a href="#contact" class="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full hover:opacity-90 transition-opacity font-medium">
+        <a 
+          href="#contact" 
+          class="btn btn-neon btn-pill"
+          @click="createRipple($event)"
+          aria-label="Contact me"
+        >
+          <Mail class="w-4 h-4" aria-hidden="true" />
           Contact Me
         </a>
       </div>
 
       <!-- Social Links -->
-      <div class="flex gap-6 justify-center">
-        <a href="https://github.com" target="_blank" class="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
+      <div class="hero-animate-item flex gap-6 justify-center">
+        <a href="https://github.com/ajit421" target="_blank" class="social-icon-github text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors duration-300 p-2" aria-label="GitHub Profile">
           <Github class="w-6 h-6" />
         </a>
-        <a href="https://linkedin.com" target="_blank" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors">
+        <a href="https://linkedin.com/in/ajit7900" target="_blank" class="social-icon-linkedin text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors duration-300 p-2" aria-label="LinkedIn Profile">
           <Linkedin class="w-6 h-6" />
         </a>
-        <a href="mailto:ajit@example.com" class="text-gray-600 dark:text-gray-400 hover:text-red-500 transition-colors">
+        <a href="mailto:ajit.info999@gmail.com" class="social-icon-mail text-gray-600 dark:text-gray-400 hover:text-red-500 transition-colors duration-300 p-2" aria-label="Send Email">
           <Mail class="w-6 h-6" />
         </a>
       </div>
@@ -168,26 +285,7 @@ const particlesOptions = {
 
     <!-- Scroll Indicator -->
     <div class="absolute bottom-8 animate-bounce">
-      <ChevronDown class="w-8 h-8 text-gray-400" />
+      <ChevronDown class="w-8 h-8 text-gray-400" aria-hidden="true" />
     </div>
   </section>
 </template>
-
-<style scoped>
-.animate-fade-in {
-  animation: fadeIn 1s ease-out;
-}
-.animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-</style>

@@ -4,6 +4,11 @@
 
 @layer base {
 
+  /* Smooth scroll with easing */
+  html {
+    scroll-behavior: smooth;
+  }
+
   /* Smooth transitions for theme changes */
   :root {
     transition-property: background-color, color, border-color;
@@ -13,6 +18,10 @@
 
   /* Respect prefers-reduced-motion */
   @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
     :root {
       transition-duration: 0ms;
     }
@@ -21,6 +30,12 @@
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+    }
+
+    .gsap-animated,
+    [data-gsap] {
+      opacity: 1 !important;
+      transform: none !important;
     }
   }
 
@@ -44,5 +59,1583 @@
     [class*="rotate"] {
       transition-property: transform, background-color, color, border-color, box-shadow;
     }
+  }
+}
+
+@layer components {
+
+  /* ============================================
+     RIPPLE EFFECT (Material Design)
+     ============================================ */
+  .ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(0);
+    animation: ripple-animation 0.7s ease-out forwards;
+    pointer-events: none;
+  }
+
+  @keyframes ripple-animation {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+
+  /* ============================================
+     SHIMMER / SKELETON LOADING
+     ============================================ */
+  .skeleton {
+    background: linear-gradient(90deg,
+        #e2e8f0 25%,
+        #f1f5f9 50%,
+        #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: 0.5rem;
+  }
+
+  .dark .skeleton {
+    background: linear-gradient(90deg,
+        #1e293b 25%,
+        #334155 50%,
+        #1e293b 75%);
+    background-size: 200% 100%;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* ============================================
+     GLOW BORDER ON HOVER
+     ============================================ */
+  .glow-border {
+    transition: box-shadow 0.4s ease;
+  }
+
+  .glow-border:hover {
+    box-shadow:
+      0 0 15px rgba(37, 99, 235, 0.3),
+      0 0 30px rgba(37, 99, 235, 0.15),
+      0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .glow-border:hover {
+    box-shadow:
+      0 0 15px rgba(59, 130, 246, 0.4),
+      0 0 30px rgba(59, 130, 246, 0.2),
+      0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  /* ============================================
+     GRADIENT SHIFT (Button hover)
+     ============================================ */
+  .gradient-shift-btn {
+    background: linear-gradient(135deg, #2563EB, #3B82F6, #60A5FA);
+    background-size: 200% 200%;
+    transition: background-position 0.5s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .gradient-shift-btn:hover {
+    background-position: 100% 100%;
+  }
+
+  /* ============================================
+     SHADOW PULSE (Button hover)
+     ============================================ */
+  .shadow-pulse:hover {
+    animation: shadow-pulse-anim 1.5s ease-in-out infinite;
+  }
+
+  @keyframes shadow-pulse-anim {
+
+    0%,
+    100% {
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    }
+
+    50% {
+      box-shadow: 0 4px 30px rgba(37, 99, 235, 0.7);
+    }
+  }
+
+  /* ============================================
+     3D FLIP CARD
+     ============================================ */
+  .flip-card {
+    perspective: 1000px;
+  }
+
+  .flip-card-inner {
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+  }
+
+  .flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+
+  .flip-card-front,
+  .flip-card-back {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .flip-card-back {
+    transform: rotateY(180deg);
+  }
+
+  /* ============================================
+     TOAST NOTIFICATION
+     ============================================ */
+  .toast-enter-active {
+    animation: toast-slide-in 0.4s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+  }
+
+  .toast-leave-active {
+    animation: toast-slide-out 0.3s ease-in forwards;
+  }
+
+  @keyframes toast-slide-in {
+    from {
+      transform: translateX(120%);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes toast-slide-out {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    to {
+      transform: translateX(120%);
+      opacity: 0;
+    }
+  }
+
+  /* ============================================
+     PROJECT CARD HOVER OVERLAY
+     ============================================ */
+  .card-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(37, 99, 235, 0.85);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .card-overlay:hover,
+  .group:hover .card-overlay {
+    opacity: 1;
+  }
+
+  .card-overlay span {
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    transform: translateY(8px);
+    transition: transform 0.35s ease;
+  }
+
+  .group:hover .card-overlay span {
+    transform: translateY(0);
+  }
+
+  /* ============================================
+     NAVBAR SMART HIDE/SHOW
+     ============================================ */
+  .nav-hidden {
+    transform: translateY(-100%);
+  }
+
+  .nav-visible {
+    transform: translateY(0);
+  }
+
+  /* ============================================
+     ACTIVE NAV UNDERLINE
+     ============================================ */
+  .nav-link-animated {
+    position: relative;
+  }
+
+  .nav-link-animated::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: #2563EB;
+    transition: width 0.3s ease, left 0.3s ease;
+    border-radius: 1px;
+  }
+
+  .nav-link-animated.active::after,
+  .nav-link-animated:hover::after {
+    width: 100%;
+    left: 0;
+  }
+
+  /* ============================================
+     LOGO SPIN ON HOVER
+     ============================================ */
+  .logo-spin {
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+  }
+
+  .logo-spin:hover {
+    transform: rotate(360deg);
+  }
+
+  /* ============================================
+     MOBILE MENU SLIDE-IN
+     ============================================ */
+  .mobile-menu-enter-active {
+    transition: transform 0.35s cubic-bezier(0.21, 1.02, 0.73, 1), opacity 0.35s ease;
+  }
+
+  .mobile-menu-leave-active {
+    transition: transform 0.25s ease-in, opacity 0.25s ease-in;
+  }
+
+  .mobile-menu-enter-from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  .mobile-menu-leave-to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  /* ============================================
+     MODAL ENHANCED TRANSITION
+     ============================================ */
+  .modal-enhanced-enter-active {
+    transition: opacity 0.3s ease;
+  }
+
+  .modal-enhanced-leave-active {
+    transition: opacity 0.25s ease;
+  }
+
+  .modal-enhanced-enter-from,
+  .modal-enhanced-leave-to {
+    opacity: 0;
+  }
+
+  .modal-content-enter-active {
+    transition: transform 0.35s cubic-bezier(0.21, 1.02, 0.73, 1), opacity 0.3s ease;
+  }
+
+  .modal-content-leave-active {
+    transition: transform 0.2s ease-in, opacity 0.2s ease;
+  }
+
+  .modal-content-enter-from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+
+  .modal-content-leave-to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  /* ============================================
+     WILL-CHANGE HINTS (perf optimization)
+     ============================================ */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  /* ============================================
+     SPINNER GRADIENT
+     ============================================ */
+  .spinner-gradient {
+    border: 3px solid transparent;
+    border-top-color: #2563EB;
+    border-right-color: #10B981;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* ============================================
+     ICON SLIDE-IN ON HOVER (for buttons)
+     ============================================ */
+  .btn-icon-slide .btn-icon {
+    display: inline-block;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateX(-8px);
+    opacity: 0;
+  }
+
+  .btn-icon-slide:hover .btn-icon {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  /* ============================================
+     TECH ICONS (Devicons)
+     ============================================ */
+  .tech-icon {
+    font-size: 2.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: grayscale(100%);
+    opacity: 0.6;
+  }
+
+  .tech-icon:hover {
+    filter: grayscale(0%);
+    opacity: 1;
+    transform: translateY(-8px) rotate(5deg);
+  }
+
+  /* Bounce on scroll entrance */
+  .icon-bounce {
+    animation: icon-bounce-anim 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes icon-bounce-anim {
+    0% {
+      transform: translateY(20px) scale(0.8);
+      opacity: 0;
+    }
+
+    60% {
+      transform: translateY(-6px) scale(1.05);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* ============================================
+     ICON FLOAT (status badges)
+     ============================================ */
+  .icon-float {
+    animation: icon-float-anim 2.5s ease-in-out infinite;
+  }
+
+  @keyframes icon-float-anim {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  /* ============================================
+     STATUS GLOW (green pulse for "available")
+     ============================================ */
+  .status-glow {
+    animation: status-glow-anim 2s ease-in-out infinite;
+  }
+
+  @keyframes status-glow-anim {
+
+    0%,
+    100% {
+      box-shadow: 0 0 4px rgba(16, 185, 129, 0.4);
+    }
+
+    50% {
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.8), 0 0 24px rgba(16, 185, 129, 0.3);
+    }
+  }
+
+  /* ============================================
+     SOCIAL ICON HOVER VARIANTS
+     ============================================ */
+  .social-icon-github:hover {
+    animation: social-spin 0.6s ease;
+  }
+
+  @keyframes social-spin {
+    0% {
+      transform: rotate(0deg) scale(1);
+    }
+
+    50% {
+      transform: rotate(180deg) scale(1.15);
+    }
+
+    100% {
+      transform: rotate(360deg) scale(1);
+    }
+  }
+
+  .social-icon-linkedin:hover {
+    animation: social-pulse 0.5s ease;
+  }
+
+  @keyframes social-pulse {
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.2);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .social-icon-mail:hover {
+    animation: social-send 0.5s ease;
+  }
+
+  @keyframes social-send {
+    0% {
+      transform: translateX(0) scale(1);
+    }
+
+    50% {
+      transform: translateX(4px) scale(0.95);
+    }
+
+    100% {
+      transform: translateX(0) scale(1);
+    }
+  }
+
+  .social-icon-phone:hover {
+    animation: social-vibrate 0.3s ease;
+    animation-iteration-count: 2;
+  }
+
+  @keyframes social-vibrate {
+
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+
+    25% {
+      transform: translateX(-2px) rotate(-3deg);
+    }
+
+    75% {
+      transform: translateX(2px) rotate(3deg);
+    }
+  }
+
+  /* ============================================
+     NAV ICON BOUNCE ON HOVER
+     ============================================ */
+  .nav-icon {
+    transition: transform 0.3s ease;
+    display: inline-block;
+  }
+
+  .nav-icon:hover,
+  .group:hover .nav-icon {
+    animation: nav-icon-bounce 0.4s ease;
+  }
+
+  @keyframes nav-icon-bounce {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    40% {
+      transform: translateY(-4px);
+    }
+
+    60% {
+      transform: translateY(-2px);
+    }
+  }
+
+  /* ============================================
+     DOWNLOAD ARROW ANIMATION
+     ============================================ */
+  .download-arrow {
+    transition: transform 0.3s ease;
+    display: inline-block;
+  }
+
+  .group:hover .download-arrow,
+  .download-arrow-trigger:hover .download-arrow {
+    animation: download-bounce 0.5s ease infinite;
+  }
+
+  @keyframes download-bounce {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(3px);
+    }
+  }
+
+  /* ============================================
+     ICON LINK ARROW SLIDE
+     ============================================ */
+  .icon-arrow-slide {
+    transition: transform 0.3s ease;
+    display: inline-block;
+  }
+
+  .group:hover .icon-arrow-slide {
+    transform: translate(2px, -2px);
+  }
+
+  /* ============================================
+     TECH ICON TOOLTIP
+     ============================================ */
+  .tech-icon-wrapper {
+    position: relative;
+  }
+
+  .tech-icon-wrapper .tooltip {
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    opacity: 0;
+    background: #1e293b;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .dark .tech-icon-wrapper .tooltip {
+    background: #e2e8f0;
+    color: #0f172a;
+  }
+
+  .tech-icon-wrapper:hover .tooltip {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+
+  /* ============================================
+     BUTTON SYSTEM — Base
+     ============================================ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.25s ease,
+      background-color 0.3s ease,
+      color 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn:focus-visible {
+    outline: 3px solid #3B82F6;
+    outline-offset: 2px;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+    filter: grayscale(30%);
+  }
+
+  /* ============================================
+     BUTTON — Primary (Gradient Sweep)
+     ============================================ */
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border: none;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+  }
+
+  .btn-primary:hover::before {
+    left: 0;
+  }
+
+  .btn-primary>* {
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+  }
+
+  /* ============================================
+     BUTTON — Animated Gradient (Cycling)
+     ============================================ */
+  .btn-gradient-animated {
+    background: linear-gradient(270deg, #3B82F6, #8B5CF6, #EC4899, #3B82F6);
+    background-size: 400% 400%;
+    animation: btn-gradient-cycle 4s ease infinite;
+    color: #fff;
+    border: none;
+  }
+
+  .btn-gradient-animated:hover {
+    box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+    animation-duration: 2s;
+  }
+
+  @keyframes btn-gradient-cycle {
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* ============================================
+     BUTTON — Glass (Glassmorphism)
+     ============================================ */
+  .btn-glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  }
+
+  .btn-glass:hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  }
+
+  /* Light mode glass */
+  :root:not(.dark) .btn-glass {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #374151;
+  }
+
+  :root:not(.dark) .btn-glass:hover {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.15);
+  }
+
+  /* ============================================
+     BUTTON — Neon Glow
+     ============================================ */
+  .btn-neon {
+    background: transparent;
+    border: 2px solid #3B82F6;
+    color: #3B82F6;
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.3),
+      inset 0 0 5px rgba(59, 130, 246, 0.1);
+  }
+
+  .btn-neon:hover {
+    background: #3B82F6;
+    color: #fff;
+    box-shadow: 0 0 10px #3B82F6,
+      0 0 25px rgba(59, 130, 246, 0.5),
+      0 0 50px rgba(59, 130, 246, 0.25);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+  }
+
+  .dark .btn-neon {
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4),
+      inset 0 0 8px rgba(59, 130, 246, 0.15);
+  }
+
+  .dark .btn-neon:hover {
+    box-shadow: 0 0 15px #3B82F6,
+      0 0 35px rgba(59, 130, 246, 0.6),
+      0 0 60px rgba(59, 130, 246, 0.3);
+  }
+
+  /* ============================================
+     BUTTON — Icon Slide
+     ============================================ */
+  .btn-icon-animated {
+    overflow: hidden;
+  }
+
+  .btn-icon-animated .btn-icon-el {
+    display: inline-flex;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.3s ease;
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+
+  .btn-icon-animated:hover .btn-icon-el {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  .btn-icon-animated .btn-text {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-icon-animated:hover .btn-text {
+    transform: translateX(4px);
+  }
+
+  /* ============================================
+     BUTTON — Loading / Success / Error States
+     ============================================ */
+  .btn-loading {
+    pointer-events: none;
+    position: relative;
+  }
+
+  .btn-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-right-color: currentColor;
+    border-radius: 50%;
+    animation: btn-spin 0.6s linear infinite;
+  }
+
+  @keyframes btn-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .btn-success {
+    background: #10B981 !important;
+    border-color: #10B981 !important;
+    color: #fff !important;
+  }
+
+  .btn-error {
+    background: #EF4444 !important;
+    border-color: #EF4444 !important;
+    color: #fff !important;
+  }
+
+  /* ============================================
+     BUTTON — Section Color Schemes
+     ============================================ */
+
+  /* Hero: Purple-Blue */
+  .btn-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+  }
+
+  .btn-hero:hover {
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+  }
+
+  /* Projects: Blue-Cyan */
+  .btn-projects {
+    background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
+    color: #fff;
+  }
+
+  .btn-projects:hover {
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.5);
+  }
+
+  /* Contact: Green-Teal */
+  .btn-contact {
+    background: linear-gradient(135deg, #10B981 0%, #14B8A6 100%);
+    color: #fff;
+  }
+
+  .btn-contact:hover {
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.5);
+  }
+
+  /* Download: Orange-Red */
+  .btn-download {
+    background: linear-gradient(135deg, #F97316 0%, #EF4444 100%);
+    color: #fff;
+  }
+
+  .btn-download:hover {
+    box-shadow: 0 10px 30px rgba(249, 115, 22, 0.5);
+  }
+
+  /* ============================================
+     BUTTON — Rounded Pill variant
+     ============================================ */
+  .btn-pill {
+    border-radius: 9999px;
+  }
+
+  /* ============================================
+     BUTTON — Sizes
+     ============================================ */
+  .btn-sm {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.8rem;
+  }
+
+  .btn-lg {
+    padding: 1rem 2.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* ============================================
+   COLOR THEME SYSTEM
+   ============================================ */
+
+/* --- Cyberpunk (Default) --- */
+:root,
+:root[data-color-theme="cyberpunk"] {
+  --theme-primary: #667eea;
+  --theme-secondary: #764ba2;
+  --theme-accent: #f5576c;
+  --theme-success: #43e97b;
+  --theme-warning: #f093fb;
+
+  --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+
+  --theme-hero-bg: radial-gradient(circle at top right, rgba(102, 126, 234, 0.12), transparent 50%),
+    radial-gradient(circle at bottom left, rgba(118, 75, 162, 0.12), transparent 50%);
+  --theme-contact-bg: radial-gradient(ellipse at center, rgba(67, 233, 123, 0.08), transparent 70%);
+  --theme-projects-bg: linear-gradient(180deg, transparent 0%, rgba(102, 126, 234, 0.04) 100%);
+
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: rgba(31, 38, 135, 0.15);
+  --glass-inset: rgba(255, 255, 255, 0.1);
+
+  --neu-shadow-dark: rgba(0, 0, 0, 0.2);
+  --neu-shadow-light: rgba(255, 255, 255, 0.05);
+}
+
+/* Light-mode glass overrides */
+:root:not(.dark) {
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(209, 213, 219, 0.3);
+  --glass-shadow: rgba(31, 38, 135, 0.1);
+  --glass-inset: rgba(255, 255, 255, 0.5);
+  --neu-shadow-dark: rgba(0, 0, 0, 0.08);
+  --neu-shadow-light: rgba(255, 255, 255, 0.9);
+}
+
+/* --- Aurora --- */
+:root[data-color-theme="aurora"] {
+  --theme-primary: #6f86d6;
+  --theme-secondary: #48c6ef;
+  --theme-accent: #fed6e3;
+  --theme-success: #a8edea;
+  --theme-warning: #fcb69f;
+
+  --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  --gradient-2: linear-gradient(135deg, #48c6ef 0%, #6f86d6 100%);
+  --gradient-3: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  --gradient-4: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+
+  --theme-hero-bg: radial-gradient(circle at top right, rgba(111, 134, 214, 0.12), transparent 50%),
+    radial-gradient(circle at bottom left, rgba(72, 198, 239, 0.1), transparent 50%);
+  --theme-contact-bg: radial-gradient(ellipse at center, rgba(168, 237, 234, 0.08), transparent 70%);
+  --theme-projects-bg: linear-gradient(180deg, transparent 0%, rgba(111, 134, 214, 0.04) 100%);
+}
+
+/* --- Sunset --- */
+:root[data-color-theme="sunset"] {
+  --theme-primary: #fa709a;
+  --theme-secondary: #fee140;
+  --theme-accent: #30cfd0;
+  --theme-success: #a8edea;
+  --theme-warning: #fcb69f;
+
+  --gradient-1: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  --gradient-2: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+  --gradient-3: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  --gradient-4: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+
+  --theme-hero-bg: radial-gradient(circle at top right, rgba(250, 112, 154, 0.12), transparent 50%),
+    radial-gradient(circle at bottom left, rgba(254, 225, 64, 0.08), transparent 50%);
+  --theme-contact-bg: radial-gradient(ellipse at center, rgba(48, 207, 208, 0.08), transparent 70%);
+  --theme-projects-bg: linear-gradient(180deg, transparent 0%, rgba(250, 112, 154, 0.04) 100%);
+}
+
+/* --- Ocean --- */
+:root[data-color-theme="ocean"] {
+  --theme-primary: #2E3192;
+  --theme-secondary: #1BFFFF;
+  --theme-accent: #00C9FF;
+  --theme-success: #92FE9D;
+  --theme-warning: #1BFFFF;
+
+  --gradient-1: linear-gradient(135deg, #2E3192 0%, #1BFFFF 100%);
+  --gradient-2: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%);
+  --gradient-3: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  --gradient-4: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+  --theme-hero-bg: radial-gradient(circle at top right, rgba(46, 49, 146, 0.12), transparent 50%),
+    radial-gradient(circle at bottom left, rgba(27, 255, 255, 0.08), transparent 50%);
+  --theme-contact-bg: radial-gradient(ellipse at center, rgba(0, 201, 255, 0.08), transparent 70%);
+  --theme-projects-bg: linear-gradient(180deg, transparent 0%, rgba(46, 49, 146, 0.04) 100%);
+}
+
+/* ============================================
+   GLASSMORPHISM
+   ============================================ */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 8px 32px 0 var(--glass-shadow),
+    inset 0 1px 0 0 var(--glass-inset);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.glass-card:hover {
+  box-shadow:
+    0 12px 40px 0 var(--glass-shadow),
+    inset 0 1px 0 0 var(--glass-inset);
+}
+
+/* ============================================
+   NEUMORPHISM
+   ============================================ */
+.neu-card {
+  border-radius: 20px;
+  box-shadow:
+    10px 10px 20px var(--neu-shadow-dark),
+    -10px -10px 20px var(--neu-shadow-light);
+  transition: box-shadow 0.3s ease;
+}
+
+.neu-card:hover {
+  box-shadow:
+    6px 6px 14px var(--neu-shadow-dark),
+    -6px -6px 14px var(--neu-shadow-light);
+}
+
+/* ============================================
+   GRADIENT TEXT
+   ============================================ */
+.gradient-text {
+  background: var(--gradient-1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% auto;
+  animation: gradient-shift 4s ease infinite;
+}
+
+@keyframes gradient-shift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ============================================
+   GRADIENT ANIMATIONS
+   ============================================ */
+@keyframes gradient-x {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes gradient-y {
+
+  0%,
+  100% {
+    background-position: 50% 0%;
+  }
+
+  50% {
+    background-position: 50% 100%;
+  }
+}
+
+@keyframes gradient-xy {
+
+  0%,
+  100% {
+    background-position: 0% 0%;
+  }
+
+  25% {
+    background-position: 100% 0%;
+  }
+
+  50% {
+    background-position: 100% 100%;
+  }
+
+  75% {
+    background-position: 0% 100%;
+  }
+}
+
+/* ============================================
+   SECTION-SPECIFIC THEMED BACKGROUNDS
+   ============================================ */
+.section-bg-hero {
+  background: var(--theme-hero-bg);
+}
+
+.section-bg-projects {
+  background: var(--theme-projects-bg);
+}
+
+.section-bg-contact {
+  background: var(--theme-contact-bg);
+}
+
+/* ============================================
+   THEMED ACCENT BORDER
+   ============================================ */
+.themed-border-accent {
+  border-color: var(--theme-primary);
+}
+
+.themed-glow {
+  box-shadow: 0 0 20px rgba(var(--theme-primary), 0.15);
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+@media (prefers-contrast: high) {
+  :root {
+    --glass-bg: rgba(0, 0, 0, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.5);
+  }
+
+  :root:not(.dark) {
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(0, 0, 0, 0.3);
+  }
+
+  .gradient-text {
+    -webkit-text-fill-color: currentColor;
+    background: none;
+  }
+}
+
+@media (prefers-reduced-transparency) {
+  .glass-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  :root.dark .glass-card {
+    background: #1E293B;
+  }
+
+  :root:not(.dark) .glass-card {
+    background: #ffffff;
+  }
+}
+
+/* ============================================
+   PREMIUM CARD VARIANTS
+   ============================================ */
+
+/* --- 1. Project Card (Hover Reveal) --- */
+.project-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--bg-card, #1e293b);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.project-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  z-index: 10;
+}
+
+.card-image {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.project-card:hover .card-image img {
+  transform: scale(1.1);
+}
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.1) 0%,
+      rgba(0, 0, 0, 0.9) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.project-card:hover .card-overlay {
+  opacity: 1;
+}
+
+.overlay-content {
+  transform: translateY(20px);
+  transition: transform 0.3s ease 0.1s;
+  width: 100%;
+}
+
+.project-card:hover .overlay-content {
+  transform: translateY(0);
+}
+
+.card-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.card-footer {
+  padding: 16px;
+  background: var(--bg-card, #1e293b);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tech-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: rgba(102, 126, 234, 0.15);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  font-size: 0.75rem;
+  color: var(--theme-primary, #667eea);
+  font-weight: 600;
+}
+
+.card-stats {
+  display: flex;
+  gap: 12px;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* --- 2. Skill Card (Flip Animation) --- */
+.skill-card {
+  perspective: 1000px;
+  height: 220px;
+  cursor: pointer;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.skill-card:hover .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  padding: 24px;
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.dark .card-front,
+.dark .card-back {
+  background: var(--bg-card, #1e293b);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
+  color: white;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.proficiency-bar {
+  height: 6px;
+  background: var(--gradient-1);
+  /* Replaces color */
+  border-radius: 3px;
+  width: var(--width);
+  animation: fill-bar 1s ease-out forwards;
+}
+
+@keyframes fill-bar {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: var(--width);
+  }
+}
+
+/* --- 3. Experience Card (Timeline) --- */
+.experience-card-timeline {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.timeline-marker {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.marker-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--gradient-1);
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+  z-index: 2;
+  margin-top: 6px;
+}
+
+.marker-line {
+  width: 2px;
+  flex: 1;
+  background: linear-gradient(to bottom,
+      var(--theme-primary),
+      transparent);
+  margin-top: 4px;
+}
+
+.card-content-timeline {
+  background: var(--bg-card, #ffffff);
+  border-radius: 16px;
+  padding: 24px;
+  border-left: 4px solid var(--theme-primary);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.dark .card-content-timeline {
+  background: #1e293b;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+.card-content-timeline:hover {
+  transform: translateX(8px);
+  box-shadow: -4px 0 20px rgba(102, 126, 234, 0.15);
+}
+
+.achievements li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 8px;
+}
+
+.achievements li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--theme-primary);
+  font-weight: bold;
+}
+
+/* --- 4. Certification Badge --- */
+.cert-badge {
+  position: relative;
+  background: var(--bg-card, #ffffff);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.dark .cert-badge {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.cert-badge:hover {
+  border-color: var(--theme-primary);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 0 0 1px var(--theme-primary);
+}
+
+.badge-ribbon {
+  position: absolute;
+  top: 15px;
+  right: -32px;
+  background: var(--gradient-1);
+  color: white;
+  padding: 4px 35px;
+  transform: rotate(45deg);
+  font-size: 10px;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.badge-icon {
+  display: inline-flex;
+  margin-bottom: 16px;
+  animation: bounce 2s infinite;
+  color: var(--theme-primary);
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.verify-btn {
+  margin-top: 16px;
+  background: rgba(102, 126, 234, 0.08);
+  border: 1px solid var(--theme-primary);
+  padding: 8px 20px;
+  border-radius: 8px;
+  color: var(--theme-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.verify-btn:hover {
+  background: var(--theme-primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* --- 5. Glassmorphism Info Card --- */
+.info-card-glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow:
+    0 8px 32px rgba(31, 38, 135, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.dark .info-card-glass {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+.info-card-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left,
+      rgba(var(--theme-primary), 0.1),
+      transparent 60%);
+  pointer-events: none;
+}
+
+.info-card-glass:hover {
+  border-color: var(--theme-primary);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+/* --- Loading Skeletons --- */
+.card-skeleton {
+  background: linear-gradient(90deg,
+      var(--bg-card, #e2e8f0) 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      var(--bg-card, #e2e8f0) 100%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+.dark .card-skeleton {
+  background: linear-gradient(90deg,
+      #1e293b 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      #1e293b 100%);
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
   }
 }

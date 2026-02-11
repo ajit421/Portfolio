@@ -1,6 +1,9 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { GraduationCap, School, BookOpen } from 'lucide-vue-next'
+import { useScrollAnimation } from '../composables/useScrollAnimation'
+
+const { slideInLeft, alternatingSlideIn } = useScrollAnimation()
 
 const educationItems = [
   {
@@ -36,34 +39,27 @@ const educationItems = [
 ]
 
 const items = ref(educationItems)
-const isVisible = ref(false)
 const sectionRef = ref(null)
 
-onMounted(() => {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        isVisible.value = true
-        observer.disconnect()
-      }
-    })
-  }, { threshold: 0.1 })
-  
-  if (sectionRef.value) {
-    observer.observe(sectionRef.value)
-  }
+onMounted(async () => {
+  await nextTick()
+  slideInLeft('.education-heading')
+
+  setTimeout(() => {
+    alternatingSlideIn('.education-timeline', '.education-card', { distance: 80, duration: 0.8 })
+  }, 100)
 })
 </script>
 
 <template>
   <section id="education" ref="sectionRef" class="py-20 bg-white dark:bg-dark-surface transition-colors duration-300">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
+      <div class="education-heading text-center mb-16">
         <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Education</h2>
         <div class="w-16 h-1 bg-primary mx-auto rounded-full"></div>
       </div>
 
-      <div class="relative">
+      <div class="education-timeline relative">
         <!-- Timeline Line -->
         <div class="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-gray-300 dark:bg-gray-700 md:transform md:-translate-x-1/2"></div>
 
@@ -72,18 +68,14 @@ onMounted(() => {
           <div 
             v-for="(item, index) in items" 
             :key="item.id"
-            :class="[
-              'relative transition-all duration-700',
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            ]"
-            :style="{ transitionDelay: `${index * 200}ms` }"
+            class="education-card relative"
           >
             <!-- Desktop Layout (Alternating) -->
             <div class="hidden md:grid md:grid-cols-2 gap-8">
               <!-- Left Side (Odd) -->
               <div :class="index % 2 === 0 ? 'text-right pr-8' : 'order-2 pl-8'">
                 <div v-if="index % 2 === 0">
-                  <div class="inline-block bg-white dark:bg-dark-background p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow text-left max-w-md">
+                  <div class="glow-border inline-block bg-white dark:bg-dark-background p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-left max-w-md">
                     <div class="flex items-start gap-4 mb-4">
                       <div class="p-3 bg-primary/10 rounded-full">
                         <component :is="item.icon" class="w-6 h-6 text-primary" />
@@ -103,7 +95,7 @@ onMounted(() => {
               <!-- Right Side (Even) -->
               <div :class="index % 2 === 1 ? 'pl-8' : 'order-1 pr-8'">
                 <div v-if="index % 2 === 1">
-                  <div class="bg-white dark:bg-dark-background p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow max-w-md">
+                  <div class="glow-border bg-white dark:bg-dark-background p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 max-w-md">
                     <div class="flex items-start gap-4 mb-4">
                       <div class="p-3 bg-primary/10 rounded-full">
                         <component :is="item.icon" class="w-6 h-6 text-primary" />
@@ -126,7 +118,7 @@ onMounted(() => {
 
             <!-- Mobile Layout (Stacked) -->
             <div class="md:hidden pl-12">
-              <div class="bg-white dark:bg-dark-background p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow">
+              <div class="glow-border bg-white dark:bg-dark-background p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
                 <div class="flex items-start gap-4 mb-4">
                   <div class="p-3 bg-primary/10 rounded-full">
                     <component :is="item.icon" class="w-6 h-6 text-primary" />

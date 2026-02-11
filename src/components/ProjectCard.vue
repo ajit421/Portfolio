@@ -1,5 +1,7 @@
 <script setup>
+import { ref } from 'vue'
 import { ExternalLink, Github, Star, GitFork } from 'lucide-vue-next'
+import { use3DTilt } from '../three/use3DTilt'
 
 const props = defineProps({
   project: {
@@ -9,6 +11,15 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['openModal'])
+const cardRef = ref(null)
+
+// Apply 3D tilt effect
+use3DTilt(cardRef, {
+  maxTilt: 6,
+  scale: 1.03,
+  speed: 400,
+  glareOpacity: 0.12,
+})
 
 const getTechColor = (tech) => {
   const colors = {
@@ -24,71 +35,71 @@ const getTechColor = (tech) => {
 
 <template>
   <div 
-    class="bg-white dark:bg-dark-surface rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group"
+    ref="cardRef"
+    class="project-card group"
+    style="transform-style: preserve-3d;"
     @click="emit('openModal', project)"
   >
-    <!-- Thumbnail placeholder -->
-    <div class="h-48 bg-gradient-to-br from-primary/20 to-accent-success/20 flex items-center justify-center relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent-success/10 group-hover:scale-110 transition-transform duration-500"></div>
-      <span class="text-6xl relative z-10">💻</span>
+    <!-- Card Image & Overlay -->
+    <div class="card-image">
+      <img v-if="project.image" :src="project.image" :alt="project.name" loading="lazy">
+      <div v-else class="h-full w-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+        <span class="text-6xl">💻</span>
+      </div>
+
+      <!-- Hover Reveal Overlay -->
+      <div class="card-overlay">
+        <div class="overlay-content">
+          <h3 class="text-white font-bold text-xl mb-1">{{ project.name }}</h3>
+          <p class="text-gray-200 text-sm mb-4 line-clamp-2">{{ project.description }}</p>
+          
+          <div class="card-actions">
+            <a 
+              v-if="project.homepage" 
+              :href="project.homepage" 
+              target="_blank"
+              @click.stop
+              class="btn-glass"
+              aria-label="Live Demo"
+            >
+              <ExternalLink class="w-4 h-4" /> Live Demo
+            </a>
+            <a 
+              v-if="project.html_url" 
+              :href="project.html_url" 
+              target="_blank"
+              @click.stop
+              class="btn-glass"
+              aria-label="View Code"
+            >
+              <Github class="w-4 h-4" /> Code
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="p-6">
-      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-1">
-        {{ project.name }}
-      </h3>
-      
-      <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
-        {{ project.description }}
-      </p>
-
-      <!-- Tech Stack -->
-      <div class="flex flex-wrap gap-2 mb-4">
+    <!-- Card Footer -->
+    <div class="card-footer">
+      <div class="tech-tags">
         <span 
           v-for="tech in (project.tech || [project.language]).filter(Boolean).slice(0, 3)" 
           :key="tech"
-          :class="getTechColor(tech)"
-          class="px-2 py-1 rounded text-xs font-medium"
+          class="tag"
         >
           {{ tech }}
         </span>
       </div>
-
-      <!-- Footer -->
-      <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-        <div class="flex items-center gap-4 text-sm text-gray-500">
-          <span v-if="project.stargazers_count !== undefined" class="flex items-center gap-1">
-            <Star class="w-4 h-4" />
-            {{ project.stargazers_count }}
-          </span>
-          <span v-if="project.forks_count" class="flex items-center gap-1">
-            <GitFork class="w-4 h-4" />
-            {{ project.forks_count }}
-          </span>
-        </div>
-
-        <div class="flex gap-2">
-          <a 
-            v-if="project.homepage" 
-            :href="project.homepage" 
-            target="_blank"
-            @click.stop
-            class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            title="Live Demo"
-          >
-            <ExternalLink class="w-4 h-4 text-primary" />
-          </a>
-          <a 
-            v-if="project.html_url" 
-            :href="project.html_url" 
-            target="_blank"
-            @click.stop
-            class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            title="View on GitHub"
-          >
-            <Github class="w-4 h-4 text-gray-600 dark:text-gray-400" />
-          </a>
-        </div>
+      
+      <div class="card-stats">
+        <span v-if="project.stargazers_count !== undefined" class="flex items-center gap-1">
+          <Star class="w-3 h-3 text-yellow-500" fill="currentColor" />
+          {{ project.stargazers_count }}
+        </span>
+        <span v-if="project.forks_count" class="flex items-center gap-1">
+          <GitFork class="w-3 h-3" />
+          {{ project.forks_count }}
+        </span>
       </div>
     </div>
   </div>

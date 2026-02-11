@@ -20,6 +20,7 @@ export default defineConfig({
           'vendor': ['vue'],
           'emailjs': ['@emailjs/browser'],
           'icons': ['lucide-vue-next'],
+          'animations': ['gsap'],
         },
       },
     },

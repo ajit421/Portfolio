@@ -15,17 +15,20 @@ const socialLinks = [
   {
     name: 'GitHub',
     icon: Github,
-    href: 'https://github.com/ajit421'
+    href: 'https://github.com/ajit421',
+    socialClass: 'social-icon-github'
   },
   {
     name: 'LinkedIn',
     icon: Linkedin,
-    href: 'https://linkedin.com/in/ajit7900'
+    href: 'https://linkedin.com/in/ajit7900',
+    socialClass: 'social-icon-linkedin'
   },
   {
     name: 'Email',
     icon: Mail,
-    href: 'mailto:ajit.info999@gmail.com'
+    href: 'mailto:ajit.info999@gmail.com',
+    socialClass: 'social-icon-mail'
   }
 ]
 
@@ -56,7 +59,7 @@ const scrollToTop = () => {
             <li v-for="link in quickLinks" :key="link.name">
               <a
                 :href="link.href"
-                class="text-gray-400 hover:text-primary transition-colors text-sm"
+                class="text-gray-400 hover:text-primary hover:translate-x-1 transition-all duration-200 text-sm inline-block"
               >
                 {{ link.name }}
               </a>
@@ -74,9 +77,10 @@ const scrollToTop = () => {
               :href="social.href"
               target="_blank"
               :title="social.name"
-              class="p-3 bg-gray-800 dark:bg-gray-900 rounded-lg hover:bg-primary hover:scale-110 transition-all"
+              :aria-label="social.name"
+              :class="['p-3 bg-gray-800 dark:bg-gray-900 rounded-lg hover:bg-primary hover:scale-110 hover:-translate-y-1 transition-all duration-300', social.socialClass]"
             >
-              <component :is="social.icon" class="w-5 h-5" />
+              <component :is="social.icon" class="w-5 h-5" aria-hidden="true" />
             </a>
           </div>
         </div>
@@ -91,9 +95,10 @@ const scrollToTop = () => {
         <!-- Back to Top Button -->
         <button
           @click="scrollToTop"
-          class="flex items-center gap-2 px-4 py-2 bg-gray-800 dark:bg-gray-900 rounded-lg hover:bg-primary transition-colors text-sm"
+          class="btn btn-glass btn-sm group"
+          aria-label="Back to top"
         >
-          <ArrowUp class="w-4 h-4" />
+          <ArrowUp class="w-4 h-4 group-hover:-translate-y-0.5 transition-transform duration-200" />
           Back to Top
         </button>
       </div>
