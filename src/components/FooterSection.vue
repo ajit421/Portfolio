@@ -1,5 +1,5 @@
 <script setup>
-import { Github, Linkedin, Mail, ArrowUp } from 'lucide-vue-next'
+import { Github, Linkedin, Mail, ArrowUp, X, MessageCircle } from 'lucide-vue-next'
 
 const currentYear = new Date().getFullYear()
 
@@ -29,6 +29,18 @@ const socialLinks = [
     icon: Mail,
     href: 'mailto:ajit.info999@gmail.com',
     socialClass: 'social-icon-mail'
+  },
+  {
+    name: 'X',
+    icon: X,
+    href: 'https://x.com/blackgold_79',
+    socialClass: 'social-icon-x'
+  },
+  {
+    name: 'Whatsapp',
+    icon: MessageCircle,
+    href: 'https://wa.me/+916205607900',
+    socialClass: 'social-icon-whatsapp'
   }
 ]
 

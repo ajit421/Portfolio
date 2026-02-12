@@ -6,7 +6,7 @@ import { useRipple } from '../composables/useRipple'
 const { createRipple } = useRipple()
 
 // --- Typing Effect ---
-const roles = ["IoT Developer", "AI/ML Engineer", "Full-Stack Developer", "PCB Designer"]
+const roles = ["IoT Developer", "AI/ML Engineer", "PCB Design Software Developer"]
 const currentRole = ref('')
 const roleIndex = ref(0)
 const charIndex = ref(0)
@@ -33,7 +33,6 @@ const typeEffect = () => {
   }
 }
 
-// --- Three.js Hero Scene Removed ---
 
 onMounted(async () => {
   setTimeout(typeEffect, 1000)
@@ -73,7 +72,7 @@ onMounted(async () => {
         </span>
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400">
           <Sparkles class="w-3.5 h-3.5 icon-float" aria-hidden="true" />
-          Currently Learning System Design
+          Currently Learning 3D Modeling
         </span>
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
           <MapPin class="w-3.5 h-3.5" aria-hidden="true" />
@@ -109,7 +108,7 @@ onMounted(async () => {
           <ArrowRight class="btn-icon-el w-4 h-4" aria-hidden="true" />
         </a>
         <a 
-          href="/resume.pdf" 
+          href="src/assets/uploads/AJIT_KUMAR_resume.pdf" 
           class="btn btn-download btn-pill btn-icon-animated download-arrow-trigger group"
           @click="createRipple($event)"
           aria-label="Download my resume"

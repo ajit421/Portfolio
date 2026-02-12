@@ -8,34 +8,34 @@ const { slideInLeft, scaleIn } = useScrollAnimation()
 
 const skillCategories = [
   {
-    title: 'Backend & Web',
+    title: 'Backend & Frontend Technologies',
     icon: Globe,
-    skills: ['Flask', 'FastAPI', 'Django', 'Vue.js', 'React', 'Node.js', 'HTML/CSS', 'REST APIs']
+    skills: ['Flask', 'FastAPI', 'Vue.js', 'React', 'HTML/CSS', 'REST APIs']
   },
   {
     title: 'AI & Machine Learning',
     icon: Brain,
-    skills: ['Python', 'TensorFlow', 'PyTorch', 'Keras', 'Scikit-learn', 'Pandas', 'NumPy', 'OpenCV']
+    skills: ['Python', 'Pandas', 'NumPy', 'Matplotlib', 'seaborn', 'OpenCV', 'TensorFlow', 'PyTorch', 'Keras', 'Scikit-learn', ]
   },
   {
     title: 'Data Engineering',
     icon: Database,
-    skills: ['SQL', 'MySQL', 'PostgreSQL', 'MongoDB', 'Apache Airflow', 'ETL Pipelines', 'Web Scraping']
+    skills: ['SQL', 'MySQL', 'MongoDB', 'Web Scraping', 'Pandas', 'NumPy', 'Matplotlib', 'seaborn', 'OpenCV']
   },
   {
     title: 'IoT & Embedded',
     icon: Cpu,
-    skills: ['Arduino', 'ESP32', 'Raspberry Pi', 'C/C++', 'MicroPython', 'PCB Design', 'Sensors']
+    skills: ['Arduino', 'ESP32', 'Raspberry Pi', 'C/C++', 'Microcontroller', 'PCB', 'Sensors', 'Actuators']
   },
   {
-    title: 'Cloud & DevOps',
+    title: 'Cloud Technologies',
     icon: Cloud,
-    skills: ['AWS (EC2, S3)', 'Docker', 'Git/GitHub', 'CI/CD', 'Linux', 'Nginx', 'Heroku']
+    skills: ['AWS (EC2, S3)', 'Microsoft Azure', 'Google Cloud Platform', 'Docker', 'Linux', 'Git/GitHub', 'CI/CD', 'Cloudflare']
   },
   {
     title: 'Programming Languages',
     icon: Terminal,
-    skills: ['Python', 'JavaScript', 'C', 'C++', 'Java', 'Bash']
+    skills: ['C', 'C++','Python', 'HTML/CSS', 'JavaScript', 'Bash']
   }
 ]
 
