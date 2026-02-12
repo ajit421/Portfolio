@@ -108,7 +108,9 @@ onMounted(async () => {
           <ArrowRight class="btn-icon-el w-4 h-4" aria-hidden="true" />
         </a>
         <a 
-          href="src/assets/uploads/AJIT_KUMAR_resume.pdf" 
+          href="https://res.cloudinary.com/dsk6zd1rj/image/upload/v1770879516/AJIT_KUMAR_ej5fu3.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
           class="btn btn-download btn-pill btn-icon-animated download-arrow-trigger group"
           @click="createRipple($event)"
           aria-label="Download my resume"

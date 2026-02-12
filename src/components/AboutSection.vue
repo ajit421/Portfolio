@@ -75,7 +75,7 @@ onMounted(async () => {
              <!-- Placeholder for Profile Image -->
              <div class="text-center p-8">
                 <div class="w-32 h-32 mx-auto bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4 text-4xl">
-                  <img src="../assets/uploads/pic.jpeg" alt="Profile Image" class="w-full h-full object-cover">
+                  <img src="https://res.cloudinary.com/dsk6zd1rj/image/upload/v1770879509/pic_gcuzzg.jpg" alt="Profile Image" class="w-full h-full object-cover">
                 </div>
                 <p class="text-sm text-gray-500">Profile Image Placeholder</p>
              </div>
