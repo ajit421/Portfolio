@@ -75,7 +75,7 @@ onMounted(async () => {
              <!-- Placeholder for Profile Image -->
              <div class="text-center p-8">
                 <div class="w-32 h-32 mx-auto bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4 text-4xl">
-                  <img src="https://placehold.co/400" alt="Profile Image" class="w-full h-full object-cover">
+                  <img src="../assets/uploads/pic.jpeg" alt="Profile Image" class="w-full h-full object-cover">
                 </div>
                 <p class="text-sm text-gray-500">Profile Image Placeholder</p>
              </div>
@@ -86,7 +86,15 @@ onMounted(async () => {
                   <Sparkles class="w-3 h-3 icon-float" aria-hidden="true" />
                   Currently Learning
                 </span>
-                <span class="text-sm font-medium text-gray-800 dark:text-gray-200">System Design</span>
+                <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Deep Learning</span>
+             </div>
+
+             <div class="absolute bottom-6 left-6 bg-white dark:bg-gray-900 px-4 py-2 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 animate-bounce">
+                <span class="flex items-center gap-1 text-xs font-bold text-primary uppercase tracking-wider">
+                  <Sparkles class="w-3 h-3 icon-float" aria-hidden="true" />
+                  Currently Working
+                </span>
+                <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Airbuddy Airospace Pvt. Ltd.</span>
              </div>
 
              <!-- Location Badge -->
@@ -108,7 +116,7 @@ onMounted(async () => {
           <div class="space-y-4 text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
             <p>
               I am a Computer Science & Engineering student at <strong class="text-gray-900 dark:text-white">Government Engineering College, Khagaria</strong>, 
-              specializing in IoT and intelligent systems. I spend my days exploring emerging technologies hands-on—building PCB calculators, 
+              specializing in Internet of Things. I spend my days exploring emerging technologies hands-on-building PCB calculators, 3D Models, 
               training neural networks, automating workflows, and deploying cloud-based solutions.
             </p>
             <p>
@@ -128,7 +136,7 @@ onMounted(async () => {
             </span>
             <span class="about-badge inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
               <BadgeCheck class="w-4 h-4" aria-hidden="true" />
-              Airbuddy Aerospace Contributor
+              Intern Airbuddy Aerospace
             </span>
           </div>
 

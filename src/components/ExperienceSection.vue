@@ -9,34 +9,36 @@ const experiences = [
   {
     id: 1,
     company: 'Airbuddy Aerospace Pvt. Ltd.',
-    role: 'IoT Intern',
-    duration: 'May 2025 - Nov 2025',
-    period: '6 months',
+    role: 'PCB Design Software Developer Intern',
+    duration: 'May 2025 - Present',
+    period: '8+ months',
     responsibilities: [
       'Designed PCB Trace Width and Magnet Calculators',
       'Implemented IPC-2221 standards',
-      'Enhanced IoT and motor design accuracy'
+      'Enhanced IoT and motor design accuracy',
+      'Developed PCB layout and magnet design tools',
+      '3D PCB Motor Visualization tools'
     ],
-    tech: ['Python', 'IPC-2221', 'PCB Design'],
+    tech: ['Python', 'IPC-2221', 'PCB Design', '3D Visualization'],
     expanded: false
   },
-  {
-    id: 2,
-    company: 'Smart India Hackathon',
-    role: 'Team Lead',
-    duration: '2024',
-    period: 'Project Phase',
-    responsibilities: [
-      'Led team in developing AI-based solution',
-      'Architected full-stack application',
-      'Managed project timeline and deliverables'
-    ],
-    tech: ['React', 'Node.js', 'AI/ML'],
-    expanded: false
-  },
+  // {
+  //   id: 2,
+  //   company: 'Smart India Hackathon',
+  //   role: 'Team Lead',
+  //   duration: '2024',
+  //   period: 'Project Phase',
+  //   responsibilities: [
+  //     'Led team in developing AI-based solution',
+  //     'Architected full-stack application',
+  //     'Managed project timeline and deliverables'
+  //   ],
+  //   tech: ['React', 'Node.js', 'AI/ML'],
+  //   expanded: false
+  // },
   {
     id: 3,
-    company: 'DeepValley EMA',
+    company: 'DeepValley EMA LLP',
     role: 'IoT Software Developer Intern',
     duration: 'Jun 2024 - Aug 2024',
     period: '2 months',
@@ -59,7 +61,7 @@ const experiences = [
       'Cloud platform connectivity',
       'IoT system design fundamentals'
     ],
-    tech: ['Arduino', 'ESP32', 'IoT Protocols'],
+    tech: ['Arduino', 'ESP32', 'Raspberry Pi', 'IoT Protocols'],
     expanded: false
   }
 ]
