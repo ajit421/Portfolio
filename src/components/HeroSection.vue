@@ -1,8 +1,6 @@
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
-import * as THREE from 'three'
 import { Github, Linkedin, Mail, ChevronDown, ArrowRight, DownloadCloud, CheckCircle, Sparkles, MapPin } from 'lucide-vue-next'
-import { useThreeScene, isMobile } from '../three/useThreeScene'
 import { useRipple } from '../composables/useRipple'
 
 const { createRipple } = useRipple()
@@ -35,138 +33,7 @@ const typeEffect = () => {
   }
 }
 
-// --- Three.js Hero Scene ---
-const threeContainer = ref(null)
-const mouseX = ref(0)
-const mouseY = ref(0)
-
-const { webglSupported } = useThreeScene(threeContainer, {
-  cameraOptions: { fov: 60, position: [0, 0, 6] },
-
-  setup(scene, camera, renderer) {
-    const mobile = isMobile()
-
-    // --- Wireframe Icosahedron (outer) ---
-    const icoGeo = new THREE.IcosahedronGeometry(2.2, 1)
-    const icoMat = new THREE.MeshStandardMaterial({
-      color: 0x3B82F6,
-      wireframe: true,
-      emissive: 0x3B82F6,
-      emissiveIntensity: 0.3,
-      transparent: true,
-      opacity: 0.55,
-    })
-    const ico = new THREE.Mesh(icoGeo, icoMat)
-    scene.add(ico)
-
-    // --- Inner icosahedron (smaller, different rotation) ---
-    const innerGeo = new THREE.IcosahedronGeometry(1.2, 0)
-    const innerMat = new THREE.MeshStandardMaterial({
-      color: 0x8B5CF6,
-      wireframe: true,
-      emissive: 0x8B5CF6,
-      emissiveIntensity: 0.4,
-      transparent: true,
-      opacity: 0.35,
-    })
-    const innerIco = new THREE.Mesh(innerGeo, innerMat)
-    scene.add(innerIco)
-
-    // --- Orbiting Particles ---
-    const particleCount = mobile ? 800 : 3000
-    const positions = new Float32Array(particleCount * 3)
-    const colors = new Float32Array(particleCount * 3)
-
-    const palette = [
-      new THREE.Color(0x3B82F6),
-      new THREE.Color(0x8B5CF6),
-      new THREE.Color(0xEC4899),
-    ]
-
-    for (let i = 0; i < particleCount; i++) {
-      const radius = 2.5 + Math.random() * 4
-      const theta = Math.random() * Math.PI * 2
-      const phi = Math.acos(2 * Math.random() - 1)
-      positions[i * 3]     = radius * Math.sin(phi) * Math.cos(theta)
-      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta)
-      positions[i * 3 + 2] = radius * Math.cos(phi)
-
-      const c = palette[Math.floor(Math.random() * 3)]
-      colors[i * 3]     = c.r
-      colors[i * 3 + 1] = c.g
-      colors[i * 3 + 2] = c.b
-    }
-
-    const particlesGeo = new THREE.BufferGeometry()
-    particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-    particlesGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3))
-
-    const particlesMat = new THREE.PointsMaterial({
-      size: mobile ? 0.035 : 0.025,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.7,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-      sizeAttenuation: true,
-    })
-    const particles = new THREE.Points(particlesGeo, particlesMat)
-    scene.add(particles)
-
-    // --- Lights ---
-    scene.add(new THREE.AmbientLight(0xffffff, 0.4))
-    const pl1 = new THREE.PointLight(0x3B82F6, 2, 20)
-    pl1.position.set(5, 5, 5)
-    const pl2 = new THREE.PointLight(0x8B5CF6, 1.5, 20)
-    pl2.position.set(-5, -3, 3)
-    scene.add(pl1, pl2)
-
-    // --- Mouse parallax listener ---
-    const onMouseMove = (e) => {
-      mouseX.value = (e.clientX / window.innerWidth - 0.5) * 2
-      mouseY.value = (e.clientY / window.innerHeight - 0.5) * 2
-    }
-    window.addEventListener('mousemove', onMouseMove)
-
-    return {
-      ico,
-      innerIco,
-      particles,
-      camera,
-      cleanup: () => {
-        window.removeEventListener('mousemove', onMouseMove)
-      },
-    }
-  },
-
-  animate(delta, elapsed, data) {
-    if (!data?.ico) return
-
-    const { ico, innerIco, particles, camera } = data
-
-    // Rotate icosahedrons
-    ico.rotation.x = elapsed * 0.15
-    ico.rotation.y = elapsed * 0.2
-    innerIco.rotation.x = -elapsed * 0.25
-    innerIco.rotation.z = elapsed * 0.18
-
-    // Breathe scale
-    const breathe = 1 + Math.sin(elapsed * 0.8) * 0.04
-    ico.scale.setScalar(breathe)
-    innerIco.scale.setScalar(1 + Math.sin(elapsed * 1.2) * 0.06)
-
-    // Particle drift
-    particles.rotation.y = elapsed * 0.05
-    particles.rotation.x = elapsed * 0.02
-
-    // Mouse parallax on camera
-    const targetX = mouseX.value * 0.5
-    const targetY = mouseY.value * -0.3
-    camera.position.x += (targetX - camera.position.x) * 0.02
-    camera.position.y += (targetY - camera.position.y) * 0.02
-    camera.lookAt(0, 0, 0)
-  },
-})
+// --- Three.js Hero Scene Removed ---
 
 onMounted(async () => {
   setTimeout(typeEffect, 1000)
@@ -190,16 +57,8 @@ onMounted(async () => {
 
 <template>
   <section class="relative h-screen flex items-center justify-center overflow-hidden section-bg-hero">
-    <!-- Three.js 3D Background -->
+    <!-- CSS Background -->
     <div
-      ref="threeContainer"
-      class="absolute inset-0 -z-10"
-      aria-hidden="true"
-    ></div>
-
-    <!-- CSS Fallback if no WebGL -->
-    <div
-      v-if="!webglSupported"
       class="absolute inset-0 -z-10 bg-gradient-to-br from-blue-900/20 via-purple-900/10 to-transparent"
       aria-hidden="true"
     ></div>

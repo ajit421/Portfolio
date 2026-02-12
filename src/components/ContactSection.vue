@@ -1,48 +1,14 @@
 <script setup>
 import { ref, reactive, onMounted, nextTick } from 'vue'
-import * as THREE from 'three'
 import { Mail, Phone, Github, Linkedin, Send, Copy, Check } from 'lucide-vue-next'
 import emailjs from '@emailjs/browser'
 import { useScrollAnimation } from '../composables/useScrollAnimation'
 import { useRipple } from '../composables/useRipple'
-import { useThreeScene, isMobile } from '../three/useThreeScene'
 
 const { slideInLeft, slideInRight } = useScrollAnimation()
 const { createRipple } = useRipple()
 
-// --- Three.js Torus Knot ---
-const torusContainer = ref(null)
-
-useThreeScene(torusContainer, {
-  cameraOptions: { fov: 50, position: [0, 0, 4] },
-
-  setup(scene) {
-    const geo = new THREE.TorusKnotGeometry(1, 0.35, 100, 16)
-    const mat = new THREE.MeshStandardMaterial({
-      color: 0x10B981,
-      roughness: 0.2,
-      metalness: 0.8,
-      emissive: 0x10B981,
-      emissiveIntensity: 0.2,
-      wireframe: false,
-    })
-    const knot = new THREE.Mesh(geo, mat)
-    scene.add(knot)
-
-    scene.add(new THREE.AmbientLight(0xffffff, 0.5))
-    const dl = new THREE.DirectionalLight(0x14B8A6, 1)
-    dl.position.set(3, 5, 5)
-    scene.add(dl)
-
-    return { knot }
-  },
-
-  animate(delta, elapsed, data) {
-    if (!data?.knot) return
-    data.knot.rotation.x = elapsed * 0.3
-    data.knot.rotation.y = elapsed * 0.5
-  },
-})
+// --- Three.js Torus Knot Removed ---
 
 // --- Form State ---
 const form = reactive({
@@ -350,11 +316,6 @@ onMounted(async () => {
 
           <div class="relative bg-gradient-to-br from-primary/10 to-accent-success/10 p-8 rounded-xl border border-primary/20 overflow-hidden">
             <!-- 3D Torus Knot decoration -->
-            <div
-              ref="torusContainer"
-              class="absolute inset-0 opacity-20 pointer-events-none"
-              aria-hidden="true"
-            ></div>
             <div class="relative z-10">
               <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Let's Build Something Amazing!</h3>
               <p class="text-gray-600 dark:text-gray-400">
