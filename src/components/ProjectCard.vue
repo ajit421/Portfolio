@@ -21,6 +21,14 @@ use3DTilt(cardRef, {
   glareOpacity: 0.12,
 })
 
+// ✅ MAGIC FUNCTION: Ye Array ko todkar alag-alag karta hai
+const getCategories = (category) => {
+  if (!category) return []
+  // Agar list hai (["IoT", "PCB"]) toh waisa hi return karo
+  // Agar akela hai ("IoT") toh usse list bana do
+  return Array.isArray(category) ? category : [category]
+}
+
 const getTechColor = (tech) => {
   const colors = {
     'Python': 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
@@ -40,14 +48,23 @@ const getTechColor = (tech) => {
     style="transform-style: preserve-3d;"
     @click="emit('openModal', project)"
   >
-    <!-- Card Image & Overlay -->
-    <div class="card-image">
+    <div class="card-image relative">
+      
+      <div class="absolute top-3 left-3 z-10 flex flex-wrap gap-2">
+        <span 
+          v-for="cat in getCategories(project.category)" 
+          :key="cat"
+          class="px-2 py-1 text-xs font-bold text-white bg-black/60 backdrop-blur-md rounded-md border border-white/20 shadow-sm"
+        >
+          {{ cat }}
+        </span>
+      </div>
+
       <img v-if="project.image" :src="project.image" :alt="project.name" loading="lazy">
       <div v-else class="h-full w-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
         <span class="text-6xl">💻</span>
       </div>
 
-      <!-- Hover Reveal Overlay -->
       <div class="card-overlay">
         <div class="overlay-content">
           <h3 class="text-white font-bold text-xl mb-1">{{ project.name }}</h3>
@@ -58,6 +75,7 @@ const getTechColor = (tech) => {
               v-if="project.homepage" 
               :href="project.homepage" 
               target="_blank"
+              rel="noopener noreferrer"
               @click.stop
               class="btn-glass"
               aria-label="Live Demo"
@@ -68,6 +86,7 @@ const getTechColor = (tech) => {
               v-if="project.html_url" 
               :href="project.html_url" 
               target="_blank"
+              rel="noopener noreferrer"
               @click.stop
               class="btn-glass"
               aria-label="View Code"
@@ -79,7 +98,6 @@ const getTechColor = (tech) => {
       </div>
     </div>
 
-    <!-- Card Footer -->
     <div class="card-footer">
       <div class="tech-tags">
         <span 
