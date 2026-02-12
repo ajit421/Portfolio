@@ -19,6 +19,14 @@ const handleEscape = (e) => {
   if (e.key === 'Escape') emit('close')
 }
 
+// ✅ MAGIC FUNCTION: Ye Array ko todkar alag-alag karta hai
+const getCategories = (category) => {
+  if (!category) return []
+  // Agar list hai (["IoT", "PCB"]) toh waisa hi return karo
+  // Agar akela hai ("IoT") toh usse list bana do
+  return Array.isArray(category) ? category : [category]
+}
+
 onMounted(() => {
   document.addEventListener('keydown', handleEscape)
   document.body.style.overflow = 'hidden'
@@ -98,9 +106,15 @@ onUnmounted(() => {
               <!-- Category -->
               <div v-if="project.category">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Category</h3>
-                <span class="inline-block px-4 py-2 bg-accent-success/10 text-accent-success rounded-lg font-medium">
-                  {{ project.category }}
-                </span>
+                <div class="flex flex-wrap gap-2">
+                  <span 
+                    v-for="cat in getCategories(project.category)" 
+                    :key="cat"
+                    class="px-4 py-2 bg-accent-success/10 text-accent-success rounded-lg font-medium"
+                  >
+                    {{ cat }}
+                  </span>
+                </div>
               </div>
 
               <!-- Links -->

@@ -3,13 +3,14 @@
         "id": "project-1",
         "name": "PCB Motor Calculator & 3D Visualizer",
         "description": "Flask-based web app for PCB motor parameter calculations with interactive 3D visualization using Three.js. Includes real-time torque, speed, and efficiency analysis.",
-        "category": "PCB",
+        "category": ["PCB", "Web"],
         "tech": [
-            "Python",
-            "Flask",
+
             "Chart.js",
             "Three.js",
-            "JavaScript"
+            "JavaScript",
+            "Python",
+            "Flask"
         ],
         "html_url": null,
         "homepage": "https://airbuddy-pcb.netlify.app",
@@ -18,17 +19,35 @@
         "image": "https://res.cloudinary.com/dsk6zd1rj/image/upload/v1770886956/51e32de7-ea59-4834-ae97-b595a4dd8895.png"
     },
     {
+        "id": "project-10",
+        "name": "3D Visualizer Software",
+        "description": "A lightweight, browser-based PCB visualizer software built with HTML, JavaScript and Python helper scripts. It visualizes PCB traces and layers using Three.js and unit conversions.",
+        "category": ["PCB", "Web", "Automation"],
+        "tech": [
+            "JavaScript",
+            "Three.js",
+            "IPPC 2221"
+        ],
+        "html_url": null,
+        "homepage": "https://airbuddy-pcb.netlify.app/3d_view",
+        "stargazers_count": 6,
+        "featured": true,
+        "image": "https://res.cloudinary.com/dsk6zd1rj/image/upload/v1770905526/3d_vue_fpxhqv.jpg"
+    },
+
+
+    {
         "id": "project-2",
         "name": "SysControl - Remote Admin Bot",
         "description": "Telegram bot for remote system administration. Control PC operations, monitor resources, execute commands, and manage files from anywhere securely.",
         "category": "Automation",
         "tech": [
-            "Python",
+
             "Telegram API",
             "Operating System",
             "OpenCV",
-            "gTTS",
-            "System Programming"
+            "gTTS"
+
         ],
         "html_url": "https://github.com/ajit421/Syscontrol",
         "homepage": null,
@@ -40,14 +59,15 @@
         "id": "project-3",
         "name": "Smart Calculator - AI Handwriting Recognition",
         "description": "AI-powered calculator recognizing handwritten mathematical expressions. Uses CNN for digit recognition and expression parsing for computation.",
-        "category": "AI/ML",
+        "category": ["AI/ML", "Automation"],
         "tech": [
             "Gemini API",
+            "Canvas API",
+            "REST API",
             "HTML",
             "CSS",
-            "JavaScript",
-            "Canvas API",
-            "REST API"
+            "JavaScript"
+
         ],
         "html_url": "https://github.com/ajit421/smart-calculator",
         "homepage": "https://ajit421.github.io/smart-calculator",
@@ -61,12 +81,13 @@
         "description": "Multi-account Gmail monitoring system with instant Telegram notifications. Supports custom filters, attachment previews, and priority flagging.",
         "category": "Automation",
         "tech": [
-            "Python",
-            "Gmail API",
-            "Telegram Bot API",
+
             "OAuth 2.0",
             "REST API",
-            "Google Cloud Console"
+            "Google Cloud Console",
+            "Python",
+            "Gmail API",
+            "Telegram Bot API"
         ],
         "html_url": "https://github.com/ajit421/gmail-telegram-notifier",
         "homepage": null,
@@ -80,11 +101,12 @@
         "description": "Utility to convert bright PDF backgrounds to eye-friendly dark mode. Batch processing support with customizable color schemes.",
         "category": "Automation",
         "tech": [
-            "Python",
+
             "PyPDF2",
             "PIL",
             "Streamlit",
-            "Cloudinary"
+            "Cloudinary",
+            "Python"
         ],
         "html_url": "https://github.com/ajit421/PDF-eye-saver",
         "homepage": "https://eye-saver.streamlit.app",
@@ -98,15 +120,16 @@
         "description": "Comprehensive collection of ML algorithms implemented from scratch including regression, classification, clustering, and neural networks with visualizations.",
         "category": "AI/ML",
         "tech": [
+
+            "TensorFlow",
+            "Keras",
+            "PyTorch",
             "Python",
             "NumPy",
             "Scikit-learn",
             "Matplotlib",
             "Pandas",
-            "Seaborn",
-            "TensorFlow",
-            "Keras",
-            "PyTorch"
+            "Seaborn"
         ],
         "html_url": "https://github.com/ajit421/Machine_Learning",
         "homepage": null,
@@ -114,23 +137,7 @@
         "featured": true,
         "image": "https://res.cloudinary.com/dsk6zd1rj/image/upload/v1770881318/7b9aa07d-c4fc-4e0d-95da-26dece64d4c6.png"
     },
-    {
-        "id": "project-7",
-        "name": "Flask Multi-App Collection",
-        "description": "Portfolio of Flask web applications including authentication systems, REST APIs, real-time dashboards, and database-driven apps.",
-        "category": "Web",
-        "tech": [
-            "Python",
-            "Flask",
-            "SQLAlchemy",
-            "JavaScript"
-        ],
-        "html_url": "https://github.com/ajit421",
-        "homepage": null,
-        "stargazers_count": 10,
-        "featured": true,
-        "image": null
-    },
+    
 
     {
         "id": "project-8",
@@ -165,5 +172,22 @@
         "stargazers_count": 12,
         "featured": true,
         "image": "https://res.cloudinary.com/dsk6zd1rj/image/upload/v1770899795/4f6ecd8e-8fa6-4068-90b9-7bf93f46a4c5.png"
+    },
+    {
+        "id": "project-7",
+        "name": "Flask Multi-App Collection",
+        "description": "Portfolio of Flask web applications including authentication systems, REST APIs, real-time dashboards, and database-driven apps.",
+        "category": "Web",
+        "tech": [
+            "Python",
+            "Flask",
+            "SQLAlchemy",
+            "JavaScript"
+        ],
+        "html_url": "https://github.com/ajit421",
+        "homepage": null,
+        "stargazers_count": 10,
+        "featured": true,
+        "image": null
     }
 ]
