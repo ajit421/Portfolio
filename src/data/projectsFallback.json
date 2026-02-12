@@ -7,10 +7,11 @@
         "tech": [
             "Python",
             "Flask",
+            "Chart.js",
             "Three.js",
             "JavaScript"
         ],
-        "html_url": "https://github.com/ajit421",
+        "html_url": "https://airbuddy-pcb.netlify.app",
         "homepage": null,
         "stargazers_count": 12,
         "featured": true,
@@ -24,9 +25,12 @@
         "tech": [
             "Python",
             "Telegram API",
+            "Operating System",
+            "OpenCV",
+            "gTTS",
             "System Programming"
         ],
-        "html_url": "https://github.com/ajit421",
+        "html_url": "https://github.com/ajit421/Syscontrol",
         "homepage": null,
         "stargazers_count": 8,
         "featured": true,
@@ -38,12 +42,14 @@
         "description": "AI-powered calculator recognizing handwritten mathematical expressions. Uses CNN for digit recognition and expression parsing for computation.",
         "category": "AI/ML",
         "tech": [
-            "Python",
-            "TensorFlow",
-            "OpenCV",
-            "Streamlit"
+            "Gemini API",
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "Canvas API",
+            "REST API"
         ],
-        "html_url": "https://github.com/ajit421",
+        "html_url": "https://ajit421.github.io/smart-calculator",
         "homepage": null,
         "stargazers_count": 15,
         "featured": true,
@@ -57,9 +63,12 @@
         "tech": [
             "Python",
             "Gmail API",
-            "Telegram Bot API"
+            "Telegram Bot API",
+            "OAuth 2.0",
+            "REST API",
+            "Google Cloud Console"
         ],
-        "html_url": "https://github.com/ajit421",
+        "html_url": "https://github.com/ajit421/gmail-telegram-notifier",
         "homepage": null,
         "stargazers_count": 6,
         "featured": true,
@@ -73,9 +82,11 @@
         "tech": [
             "Python",
             "PyPDF2",
-            "PIL"
+            "PIL",
+            "Streamlit",
+            "Cloudinary"
         ],
-        "html_url": "https://github.com/ajit421",
+        "html_url": "https://eye-saver.streamlit.app",
         "homepage": null,
         "stargazers_count": 4,
         "featured": true,
@@ -90,9 +101,14 @@
             "Python",
             "NumPy",
             "Scikit-learn",
-            "Matplotlib"
+            "Matplotlib",
+            "Pandas",
+            "Seaborn",
+            "TensorFlow",
+            "Keras",
+            "PyTorch"
         ],
-        "html_url": "https://github.com/ajit421",
+        "html_url": "https://github.com/ajit421/Machine_Learning",
         "homepage": null,
         "stargazers_count": 20,
         "featured": true,
@@ -126,7 +142,7 @@
             "Keras",
             "FastAPI"
         ],
-        "html_url": "https://github.com/ajit421",
+        "html_url": "https://github.com/ajit421/Deep_Learning",
         "homepage": null,
         "stargazers_count": 18,
         "featured": true,
