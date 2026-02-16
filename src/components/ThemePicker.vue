@@ -27,6 +27,16 @@ const themes = [
     name: 'Ocean',
     colors: ['#2E3192', '#1BFFFF', '#00C9FF', '#92FE9D'],
   },
+  {
+    id: 'forest',
+    name: 'Forest',
+    colors: ['#10B981', '#065F46', '#F59E0B', '#34D399'],
+  },
+  {
+    id: 'luxury',
+    name: 'Luxury',
+    colors: ['#D4AF37', '#0F172A', '#E5E7EB', '#996515'],
+  },
 ]
 
 const applyTheme = (themeId) => {
@@ -73,62 +83,41 @@ onUnmounted(() => {
 <template>
   <div ref="pickerRef" class="relative">
     <!-- Trigger Button -->
-    <button
-      @click.stop="togglePicker"
+    <button @click.stop="togglePicker"
       class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300"
-      :aria-label="`Color theme: ${currentTheme}. Click to change.`"
-      aria-haspopup="true"
-      :aria-expanded="isOpen"
-    >
+      :aria-label="`Color theme: ${currentTheme}. Click to change.`" aria-haspopup="true" :aria-expanded="isOpen">
       <Palette class="w-5 h-5 text-gray-700 dark:text-gray-200" />
     </button>
 
     <!-- Dropdown Panel -->
     <Transition name="theme-picker">
-      <div
-        v-if="isOpen"
-        class="absolute right-0 top-12 w-52 glass-card rounded-xl p-3 z-50"
-        role="listbox"
-        aria-label="Select color theme"
-      >
+      <div v-if="isOpen" class="absolute right-0 top-12 w-52 glass-card rounded-xl p-3 z-50" role="listbox"
+        aria-label="Select color theme">
         <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 px-1">
           Color Theme
         </p>
-        <button
-          v-for="theme in themes"
-          :key="theme.id"
-          @click="applyTheme(theme.id)"
-          class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group"
-          :class="[
+        <button v-for="theme in themes" :key="theme.id" @click="applyTheme(theme.id)"
+          class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group" :class="[
             currentTheme === theme.id
               ? 'bg-gray-100 dark:bg-gray-700/50'
               : 'hover:bg-gray-50 dark:hover:bg-gray-700/30'
-          ]"
-          role="option"
-          :aria-selected="currentTheme === theme.id"
-          :aria-label="`${theme.name} theme`"
-        >
+          ]" role="option" :aria-selected="currentTheme === theme.id" :aria-label="`${theme.name} theme`">
           <!-- Color Swatches -->
           <div class="flex -space-x-1">
-            <span
-              v-for="(color, i) in theme.colors"
-              :key="i"
+            <span v-for="(color, i) in theme.colors" :key="i"
               class="w-4 h-4 rounded-full border-2 border-white dark:border-gray-800 shadow-sm"
-              :style="{ backgroundColor: color, zIndex: 4 - i }"
-            ></span>
+              :style="{ backgroundColor: color, zIndex: 4 - i }"></span>
           </div>
 
           <!-- Theme Name -->
-          <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">
+          <span
+            class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">
             {{ theme.name }}
           </span>
 
           <!-- Active Indicator -->
-          <span
-            v-if="currentTheme === theme.id"
-            class="ml-auto w-2 h-2 rounded-full"
-            :style="{ backgroundColor: theme.colors[0] }"
-          ></span>
+          <span v-if="currentTheme === theme.id" class="ml-auto w-2 h-2 rounded-full"
+            :style="{ backgroundColor: theme.colors[0] }"></span>
         </button>
       </div>
     </Transition>
@@ -139,13 +128,16 @@ onUnmounted(() => {
 .theme-picker-enter-active {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 .theme-picker-leave-active {
   transition: all 0.15s ease-in;
 }
+
 .theme-picker-enter-from {
   opacity: 0;
   transform: translateY(-8px) scale(0.96);
 }
+
 .theme-picker-leave-to {
   opacity: 0;
   transform: translateY(-4px) scale(0.98);

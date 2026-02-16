@@ -9,11 +9,11 @@ export default {
             colors: {
                 // Light mode palette
                 primary: '#2563EB', // Blue 600
-                background: '#FFFFFF',
+                background: '#FAFAFA', // Zinc 50 - Softer white
                 surface: '#F5F5F5',
 
                 // Dark mode palette
-                'dark-background': '#0F172A', // Slate 900
+                'dark-background': '#0B1120', // Rich Dark Blue/Black
                 'dark-surface': '#1E293B',    // Slate 800
                 'dark-primary': '#3B82F6',    // Blue 500
                 'accent-success': '#10B981',  // Emerald 500
