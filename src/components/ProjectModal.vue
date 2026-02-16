@@ -41,18 +41,15 @@ onUnmounted(() => {
 <template>
   <Teleport to="body">
     <Transition name="modal-enhanced">
-      <div 
-        v-if="isOpen" 
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-        @click="emit('close')"
-      >
+      <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+        @click="emit('close')">
         <Transition name="modal-content" appear>
-          <div 
+          <div
             class="bg-white dark:bg-dark-surface rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-            @click.stop
-          >
+            @click.stop>
             <!-- Header -->
-            <div class="sticky top-0 bg-white dark:bg-dark-surface border-b border-gray-200 dark:border-gray-700 p-6 flex items-start justify-between">
+            <div
+              class="sticky top-0 bg-white dark:bg-dark-surface border-b border-gray-200 dark:border-gray-700 p-6 flex items-start justify-between">
               <div class="flex-1">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                   {{ project.name }}
@@ -71,10 +68,8 @@ onUnmounted(() => {
                   </span>
                 </div>
               </div>
-              <button 
-                @click="emit('close')"
-                class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-all hover:rotate-90 duration-300"
-              >
+              <button @click="emit('close')"
+                class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-all hover:rotate-90 duration-300">
                 <X class="w-5 h-5" />
               </button>
             </div>
@@ -93,11 +88,8 @@ onUnmounted(() => {
               <div v-if="project.tech">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Tech Stack</h3>
                 <div class="flex flex-wrap gap-2">
-                  <span 
-                    v-for="tech in project.tech" 
-                    :key="tech"
-                    class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/20 transition-colors"
-                  >
+                  <span v-for="tech in project.tech" :key="tech"
+                    class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/20 transition-colors">
                     {{ tech }}
                   </span>
                 </div>
@@ -107,11 +99,8 @@ onUnmounted(() => {
               <div v-if="project.category">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Category</h3>
                 <div class="flex flex-wrap gap-2">
-                  <span 
-                    v-for="cat in getCategories(project.category)" 
-                    :key="cat"
-                    class="px-4 py-2 bg-accent-success/10 text-accent-success rounded-lg font-medium"
-                  >
+                  <span v-for="cat in getCategories(project.category)" :key="cat"
+                    class="px-4 py-2 bg-accent-success/10 text-accent-success rounded-lg font-medium">
                     {{ cat }}
                   </span>
                 </div>
@@ -119,23 +108,13 @@ onUnmounted(() => {
 
               <!-- Links -->
               <div class="flex gap-4 pt-4">
-                <a 
-                  v-if="project.homepage" 
-                  :href="project.homepage" 
-                  target="_blank"
-                  class="btn btn-projects group"
-                  aria-label="Live Demo"
-                >
+                <a v-if="project.homepage" :href="project.homepage" target="_blank" class="btn btn-projects group"
+                  aria-label="Live Demo">
                   <ExternalLink class="w-5 h-5 icon-arrow-slide" aria-hidden="true" />
                   <span>Live Demo</span>
                 </a>
-                <a 
-                  v-if="project.html_url" 
-                  :href="project.html_url" 
-                  target="_blank"
-                  class="btn btn-glass social-icon-github"
-                  aria-label="View Code on GitHub"
-                >
+                <a v-if="project.html_url" :href="project.html_url" target="_blank" class="btn btn-glass"
+                  aria-label="View Code on GitHub">
                   <Github class="w-5 h-5" aria-hidden="true" />
                   <span>View Code</span>
                 </a>
