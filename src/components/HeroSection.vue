@@ -33,6 +33,15 @@ const typeEffect = () => {
   }
 }
 
+// --- Scroll Function ---
+const scrollToAbout = () => {
+  // Finds the element with id="about" (Make sure your AboutSection has id="about")
+  const element = document.getElementById('about') || document.getElementById('skills'); // Tries about, falls back to skills
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+
 
 onMounted(async () => {
   setTimeout(typeEffect, 1000)
@@ -138,8 +147,12 @@ onMounted(async () => {
     </div>
 
     <!-- Scroll Indicator -->
-    <div class="absolute bottom-8 animate-bounce">
-      <ChevronDown class="w-8 h-8 text-gray-400" aria-hidden="true" />
+    <div 
+      @click="scrollToAbout"
+      class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50 cursor-pointer animate-bounce p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+      aria-label="Scroll down"
+    >
+      <ChevronDown class="w-8 h-8 text-primary/80 hover:text-primary" aria-hidden="true" />
     </div>
   </section>
 </template>
